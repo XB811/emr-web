@@ -27,6 +27,7 @@ module.exports = {
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
+  // 当前项目的使用的环境配置为 开发 环境
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
@@ -36,7 +37,14 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+    proxy: {
+      // 含有/api的请求都会被代理到target上
+      '/api': {
+        target: 'http://localhost:8080/' // 目标接口域名
+      }
+    }
+    // 基础模板的模拟数据
+    // before: require('./mock/mock-server.js')
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

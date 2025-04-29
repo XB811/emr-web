@@ -15,6 +15,7 @@ export function isExternal(path) {
  * @returns {Boolean}
  */
 export function validUsername(str) {
-  const valid_map = ['admin', 'editor']
-  return valid_map.indexOf(str.trim()) >= 0
+  // return valid_map.indexOf(str.trim()) >= 0
+  // 校验规则为 用户名只能包含字母、数字和下划线，长度在1到20之间
+  return str.length > 0 && str.length < 20 && /^[a-zA-Z0-9_]+$/.test(str)
 }

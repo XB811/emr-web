@@ -4,25 +4,32 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
+// 创建一个axios实例
 const service = axios.create({
+  // 设置请求的基础URL
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
+  // 设置请求的超时时间
   timeout: 5000 // request timeout
 })
 
 // request interceptor
+// 请求前置处理器
 service.interceptors.request.use(
   config => {
     // do something before request is sent
 
+    // 如果 token存在，则每个请求都携带 token
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['X-Token'] = getToken()
+      // 设置请求头，携带token
+      config.headers['Authorization'] = getToken()
     }
     return config
   },
+  // 请求错误处理器
   error => {
     // do something with request error
     console.log(error) // for debug
@@ -31,6 +38,7 @@ service.interceptors.request.use(
 )
 
 // response interceptor
+// 响应后置处理器
 service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
@@ -46,19 +54,24 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
+    // 如果自定义的code不是0，则判断为错误 进行异常处理
+    if (res.code !== '0') {
+      // 使用返回的错误信息进行提示
       Message({
         message: res.message || 'Error',
         type: 'error',
         duration: 5 * 1000
       })
-
+      // console.log('res.code1', res.code)
+      // 这段是 非法tooken/其他客户端登录/Token过期的处理
+      // 暂时不考虑改写，根据后面需求模仿这个再写
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      if (res.code === 'A100001' || res.code === 'A100002' || res.code === 'A100003') {
+        // console.log('A100001')
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+        MessageBox.confirm('您已被登出，您可以取消以留在此页面，或者重新登录', '确认登出', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
@@ -66,11 +79,14 @@ service.interceptors.response.use(
           })
         })
       }
+      // console.log('A100001')
+      // 其他错误，直接抛出错误
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
     }
   },
+  // 如果响应错误，则进行异常处理
   error => {
     console.log('err' + error) // for debug
     Message({

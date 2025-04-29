@@ -1,8 +1,11 @@
 import request from '@/utils/request'
 
+const servicesName = '/user-services'
+
+// 用户登录
 export function login(data) {
   return request({
-    url: '/vue-admin-template/user/login',
+    url: servicesName + '/v1/login/' + data.userType,
     method: 'post',
     data
   })
@@ -10,15 +13,17 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: servicesName + '/v1/getUserInfoByToken',
     method: 'get',
     params: { token }
   })
 }
 
-export function logout() {
+export function logout(accessToken, userType) {
   return request({
-    url: '/vue-admin-template/user/logout',
+    // url: '/vue-admin-template/user/logout',
+    url: servicesName + '/v1/logout/' + userType,
+    params: { accessToken },
     method: 'post'
   })
 }

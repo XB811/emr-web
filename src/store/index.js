@@ -15,6 +15,9 @@ const store = new Vuex.Store({
     user
   },
   // Vuex的计算属性
+  // 导入 src/store/getters.js
+  // getters是一个对象，里面存放了所有的计算属性
+  // 可以通 gatters.属性名 访问计算属性
   getters
 })
 

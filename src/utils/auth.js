@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'vue_admin_template_token'
+// 将 token 存储在 cookie 中，key为 Authorization
+const TokenKey = 'Authorization'
 
 export function getToken() {
   return Cookies.get(TokenKey)
