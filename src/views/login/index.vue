@@ -93,9 +93,9 @@ export default {
     }
     return {
       loginForm: {
-        usernameOrPhone: 'root',
-        password: '123456',
-        userType: 'admin' // 添加用户类型，默认为管理员
+        usernameOrPhone: process.env.NODE_ENV === 'development' ? 'root' : '',
+        password: process.env.NODE_ENV === 'development' ? '123456' : '',
+        userType: process.env.NODE_ENV === 'development' ? 'admin' : 'patient' // 添加用户类型，默认为管理员
       },
       // 表单验证规则 与el-form的:rules绑定
       loginRules: {
