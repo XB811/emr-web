@@ -9,7 +9,8 @@ const getDefaultState = () => {
     realName: '',
     userId: '',
     userType: '',
-    username: ''
+    username: '',
+    avatar: ''
   }
 }
 
@@ -33,6 +34,10 @@ const mutations = {
   },
   SET_USER_NAME: (state, username) => {
     state.username = username
+  },
+  SET_AVATAR: (state, avatar) => {
+    // 如果avatar为空,使用默认头像
+    state.avatar = avatar
   }
 }
 
@@ -73,15 +78,16 @@ const actions = {
         const { data } = response
         // 如果没有数据，调用 Promise 的 reject 方法，通知调用方登录失败。
         if (!data) {
-          return reject('Verification failed, please Login again.')
+          return reject('验证失败，请重新登录.')
         }
         // 提取数据
-        const { realName, userId, userType, username } = data
+        const { realName, userId, userType, username, avatar } = data
         // 提取数据并存入vuex中
         commit('SET_REAL_NAME', realName)
         commit('SET_USER_ID', userId)
         commit('SET_USER_TYPE', userType)
         commit('SET_USER_NAME', username)
+        commit('SET_AVATAR', avatar)
         resolve(data)
       }).catch(error => {
         reject(error)

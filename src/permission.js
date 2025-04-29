@@ -9,11 +9,12 @@ import getPageTitle from '@/utils/get-page-title'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 // 白名单
-const whiteList = ['/login'] // no redirect whitelist
+const whiteList = ['/login', '/404'] // no redirect whitelist
 
 // 路由前置守卫
 router.beforeEach(async(to, from, next) => {
   // start progress bar
+  // 开启进度条
   NProgress.start()
 
   // set page title
@@ -28,10 +29,11 @@ router.beforeEach(async(to, from, next) => {
     if (to.path === '/login') {
       // 重定向到首页
       next({ path: '/' })
+      // 重定向后不经过后置守卫,需要手动关闭进度条
       NProgress.done()
     } else {
       // 如果不是访问登录页
-      const hasGetUserInfo = store.getters.realName
+      const hasGetUserInfo = store.getters.username
       if (hasGetUserInfo) {
         next()
       } else {
@@ -49,6 +51,7 @@ router.beforeEach(async(to, from, next) => {
           Message.error(error || 'Has Error')
           // 重定向到登录页，并携带当前路由的path参数
           next(`/login?redirect=${to.path}`)
+          // 重定向后不经过后置守卫,需要手动关闭进度条
           NProgress.done()
         }
       }
@@ -72,6 +75,7 @@ router.beforeEach(async(to, from, next) => {
 
 // 路由后置守卫
 router.afterEach(() => {
+  // 关闭进度条
   // finish progress bar
   NProgress.done()
 })
