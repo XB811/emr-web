@@ -86,7 +86,10 @@ const actions = {
         commit('SET_USER_TYPE', userType)
         commit('SET_USER_NAME', username)
         commit('SET_AVATAR', avatar)
-        resolve(data)
+        // 生成路由
+        store.dispatch('permission/generateRoutes', userType, { root: true }).then(() => {
+          resolve(data)
+        })
       }).catch(error => {
         reject(error)
       })

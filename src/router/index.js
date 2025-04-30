@@ -5,6 +5,9 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+import adminRoutes from './admin'
+import doctorRoutes from './doctor'
+import patientRoutes from './patient'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -46,18 +49,20 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
-    }]
+    redirect: '/home',
   },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  // { path: '*', redirect: '/404', hidden: true }
 ]
+
+// 按角色配置路由映射
+export const roleRoutes = {
+  admin: adminRoutes,
+  doctor: doctorRoutes,
+  patient: patientRoutes
+}
+
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support

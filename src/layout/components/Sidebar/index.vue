@@ -31,7 +31,9 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return this.$router.options.routes
+      // return this.$router.options.routes
+      // 这里读取vuex中的路由
+      return this.$store.getters.routes
     },
     activeMenu() {
       const route = this.$route

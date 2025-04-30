@@ -39,10 +39,11 @@ router.beforeEach(async(to, from, next) => {
       } else {
         // 如果缺少信息，尝试获取用户信息
         try {
-          // get user info
+          // 获取用户信息（同时会根据角色加载路由）
           await store.dispatch('user/getInfo')
 
-          next()
+          // 路由已添加，需要重新导航以避免404
+          next({ ...to, replace: true })
         } catch (error) {
           // remove token and go to login page to re-login
           // 如果根据token获取用户信息失败，移出token

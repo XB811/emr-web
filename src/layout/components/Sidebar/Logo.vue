@@ -1,3 +1,4 @@
+<!--这个组件是侧边栏顶部的网站图标和网站名称的组件-->
 <template>
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
@@ -24,7 +25,7 @@ export default {
   },
   data() {
     return {
-      title: 'Vue Admin Template',
+      title: '电子病历',
       logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
     }
   }

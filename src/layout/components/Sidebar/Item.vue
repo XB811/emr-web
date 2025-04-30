@@ -1,3 +1,4 @@
+<!--左侧侧边栏单个的样式和icon-->
 <script>
 export default {
   name: 'MenuItem',

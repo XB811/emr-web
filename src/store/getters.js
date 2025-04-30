@@ -7,6 +7,7 @@ const getters = {
   userType: state => state.user.userType, // 取出user模块的userType属性
   username: state => state.user.username, // 取出user模块的username属性
   avatar: state => state.user.avatar, // 取出user模块的avatar属性
+  routes: state => state.permission.routes, // 取出permission模块的router属性
 }
 // gatters便捷访问
 export default getters

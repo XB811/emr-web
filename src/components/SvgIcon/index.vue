@@ -1,3 +1,4 @@
+<!--这个组件控制所有icon（svg图片）的渲染样式-->
 <template>
   <div v-if="isExternal" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$listeners" />
   <svg v-else :class="svgClass" aria-hidden="true" v-on="$listeners">
