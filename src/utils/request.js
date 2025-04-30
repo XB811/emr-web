@@ -19,6 +19,11 @@ service.interceptors.request.use(
   config => {
     // do something before request is sent
 
+    // 检查是否是logout请求，如果是，添加特殊标记
+    if (config.url && config.url.includes('/logout/')) {
+      config.isLogout = true
+    }
+
     // 如果 token存在，则每个请求都携带 token
     if (store.getters.token) {
       // let each request carry token
@@ -56,6 +61,10 @@ service.interceptors.response.use(
     // if the custom code is not 20000, it is judged as an error.
     // 如果自定义的code不是0，则判断为错误 进行异常处理
     if (res.code !== '0') {
+      if(response.config.isLogout&&res.code === 'A100001'||res.code === 'A100002'||res.code ==='A100003'){
+        // 如果是登出请求，直接返回
+        return res
+      }
       // 使用返回的错误信息进行提示
       Message({
         message: res.message || 'Error',
@@ -67,7 +76,6 @@ service.interceptors.response.use(
       // 暂时不考虑改写，根据后面需求模仿这个再写
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 'A100001' || res.code === 'A100002' || res.code === 'A100003') {
-        // console.log('A100001')
         // to re-login
         MessageBox.confirm('您已被登出，您可以取消以留在此页面，或者重新登录', '确认登出', {
           confirmButtonText: '重新登录',
