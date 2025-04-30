@@ -50,13 +50,11 @@ const actions = {
       login({ usernameOrPhone: usernameOrPhone.trim(), password: password, userType }).then(response => {
         // 将后端响应写入data变量中
         const { data } = response
-        console.log('data', data)
+        // console.log('data', data)
         // 调用set方法将data存入vuex中
         commit('SET_TOKEN', data.accessToken)
-        commit('SET_REAL_NAME', data.realName)
-        commit('SET_USER_ID', data.userId)
-        commit('SET_USER_TYPE', data.userType)
-        commit('SET_USER_NAME', data.username)
+        commit('SET_USER_TYPE', userInfo.userType)
+
         // 将参数全部存入vuex中
         commit
         // 调用 src/utils/auth.js中的setToken方法将data存入cookie中

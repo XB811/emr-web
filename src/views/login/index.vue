@@ -85,8 +85,8 @@ export default {
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6 || value.length > 20) {
-        callback(new Error('密码长度在6到20个字符之间'))
+      if (value.length < 6 || value.length > 16) {
+        callback(new Error('密码长度在6到16个字符之间'))
       } else {
         callback()
       }

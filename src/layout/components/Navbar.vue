@@ -27,24 +27,43 @@
           <!-- 首页链接 -->
           <router-link to="/">
             <el-dropdown-item>
-              Home
+              首页
             </el-dropdown-item>
           </router-link>
           <!-- Github项目链接 -->
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
+          <a target="_blank" href="https://github.com/XB811/emr-web">
+            <el-dropdown-item>项目地址</el-dropdown-item>
           </a>
-          <!-- 文档链接 -->
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
+          <!-- 修改密码 -->
+          <a target="_blank" @click.prevent="updatePasswordDialog">
+            <el-dropdown-item>修改密码</el-dropdown-item>
           </a>
-          <!-- 退出登录选项，带有分隔线 -->
-          <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+          <!-- 退出登录选项 -->
+          <el-dropdown-item  @click.native="logout">
+            <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+<!--    放置dialog-->
+<!--    sync可以接受子组件的传值，修改showDialog的值-->
+    <el-dialog @close="btnCancel" width="500px" title="修改密码" :visible.sync="showDialog" append-to-body="true">
+      <el-form ref="passForm" label-width="120px" :model="passForm" :rules="rules">
+        <el-form-item label="旧密码" prop="oldPassword">
+          <el-input v-model="passForm.oldPassword" show-password size="small" />
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input v-model="passForm.newPassword" show-password size="small" />
+        </el-form-item>
+        <el-form-item label="重复密码" prop="confirmPassword">
+          <el-input v-model="passForm.confirmPassword" show-password size="small" />
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="btnOK" size="mini" type="primary" >确认修改</el-button>
+          <el-button @click="btnCancel" size="mini" >取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -55,8 +74,39 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 // 导入汉堡菜单组件，控制侧边栏
 import Hamburger from '@/components/Hamburger'
+import {updatePassword} from "@/api/user";
 
 export default {
+  data() {
+    return  {
+      passForm: {
+        oldPassword: '', // 旧密码
+        newPassword: '', // 新密码
+        confirmPassword: '' // 确认密码字段
+      },
+      rules: {
+        oldPassword: [{required: true, message: '旧密码不能为空', trigger: 'blur'}], // 旧密码
+        newPassword: [{required: true, message: '新密码不能为空', trigger: 'blur'}, {
+          trigger: 'blur',
+          min: 6,
+          max: 16,
+          message: '新密码的长度为6-16位之间'
+        }], // 新密码
+        confirmPassword: [{required: true, message: '重复密码不能为空', trigger: 'blur'}, {
+          trigger: 'blur',
+          validator: (rule, value, callback) => {
+            // value
+            if (this.passForm.newPassword === value) {
+              callback()
+            } else {
+              callback(new Error('重复密码和新密码输入不一致'))
+            }
+          }
+        }] // 确认密码字段
+      },
+      showDialog: false // 是否显示弹层
+    }
+  },
   // 注册要使用的组件
   components: {
     Breadcrumb, // 面包屑导航组件
@@ -83,6 +133,25 @@ export default {
       await this.$store.dispatch('user/logout')
       // 退出后重定向到登录页，并保存当前路径用于登录后跳转回来
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    updatePasswordDialog() {
+      this.showDialog = true
+    },
+    // 确定
+    btnOK() {
+      this.$refs.passForm.validate(async isOK => {
+        if (isOK) {
+          // 调用接口
+          await updatePassword(this.passForm,this.$store.getters.userType)
+          this.$message.success('修改密码成功')
+          this.btnCancel()
+        }
+      })
+    },
+    btnCancel() {
+      this.$refs.passForm.resetFields() // 重置表单
+      // 关闭弹层
+      this.showDialog = false
     }
   }
 }

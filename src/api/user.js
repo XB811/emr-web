@@ -27,3 +27,11 @@ export function logout(accessToken, userType) {
     method: 'post'
   })
 }
+
+export function updatePassword(data, userType) {
+  return request({
+    url: servicesName + '/v1/updatePassword'+ '/' + userType,
+    method: 'put',
+    data
+  })
+}
