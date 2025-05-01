@@ -41,22 +41,23 @@ export default {
       // 只显示有 meta.title 的路由
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       const first = matched[0]
-
-      // 如果第一个路由不是仪表盘，则在面包屑前添加仪表盘
-      if (!this.isDashboard(first)) {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
-      }
+      // 如果第一个路由不是主页，则在面包屑前添加主页
+      //第一个页面重写为主页，不再需要仪表盘了
+      // if (!this.isHome(first)) {
+      //   matched = [{ path: '/home', meta: { title: '主页' }}].concat(matched)
+      // }
 
       // 过滤出需要在面包屑中显示的路由（meta.breadcrumb 不为 false）
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
     },
-    // 判断当前路由是否为仪表盘
-    isDashboard(route) {
+    // 判断当前路由是否为主页
+    isHome(route) {
       const name = route && route.name
       if (!name) {
         return false
       }
-      return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
+      console.log(name.trim().toLocaleLowerCase())
+      return name.trim().toLocaleLowerCase() === 'Home'.toLocaleLowerCase()
     },
     // 编译路径，处理动态路由参数
     pathCompile(path) {

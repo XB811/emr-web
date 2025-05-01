@@ -87,7 +87,7 @@ const actions = {
         commit('SET_USER_NAME', username)
         commit('SET_AVATAR', avatar)
         // 生成路由
-        store.dispatch('permission/generateRoutes', userType, { root: true }).then(() => {
+        store.dispatch('dynamicRouting/generateRoutes', userType, { root: true }).then(() => {
           resolve(data)
         })
       }).catch(error => {
@@ -108,6 +108,8 @@ const actions = {
         resetRouter()
         // 重置vuex中的数据
         commit('RESET_STATE')
+        // 删除vuex中的路由
+        store.dispatch('dynamicRouting/resetRoutes')
         resolve()
       }).catch(error => {
         reject(error)

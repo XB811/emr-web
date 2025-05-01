@@ -132,7 +132,9 @@ export default {
       // 调用store中的logout action
       await this.$store.dispatch('user/logout')
       // 退出后重定向到登录页，并保存当前路径用于登录后跳转回来
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      // 多用户场景，不同role的可访问权限不同，重定向可能够会发生无权访问404的现象，退出登录后不重定向回来
+      this.$router.push(`/login`)
     },
     updatePasswordDialog() {
       this.showDialog = true
