@@ -68,6 +68,50 @@
           </div>
         </el-card>
       </el-col>
+
+      <!-- 评价信息管理卡片 -->
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <el-card shadow="hover" class="action-card">
+          <div slot="header" class="card-header">
+            <h2><i class="el-icon-s-comment"></i> 就诊评价</h2>
+          </div>
+          <div class="action-buttons">
+            <el-button type="primary" plain class="action-button" @click="handleEvaluationInfo">
+              <i class="el-icon-view"></i> 查看评价信息
+            </el-button>
+
+            <el-button type="success" plain class="action-button" @click="handleEvaluationUpdate">
+              <i class="el-icon-edit"></i> 修改评价信息
+            </el-button>
+
+            <el-button type="warning" plain class="action-button" @click="handleEvaluationCreate">
+              <i class="el-icon-plus"></i> 添加评价信息
+            </el-button>
+          </div>
+        </el-card>
+      </el-col>
+
+      <!-- 公告信息管理卡片 -->
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <el-card shadow="hover" class="action-card">
+          <div slot="header" class="card-header">
+            <h2><i class="el-icon-bell"></i> 公告信息管理</h2>
+          </div>
+          <div class="action-buttons">
+            <el-button type="primary" plain class="action-button" @click="handleNoticeInfo">
+              <i class="el-icon-view"></i> 查看公告信息
+            </el-button>
+
+            <el-button type="success" plain class="action-button" @click="handleNoticeUpdate">
+              <i class="el-icon-edit"></i> 修改公告信息
+            </el-button>
+
+            <el-button type="warning" plain class="action-button" @click="handleNoticeCreate">
+              <i class="el-icon-plus"></i> 创建公告信息
+            </el-button>
+          </div>
+        </el-card>
+      </el-col>
     </el-row>
 
     <!-- 预约时间查看对话框 -->
@@ -137,6 +181,53 @@
       create-or-update="create"
       @submit-success="handleInfoRefresh">
     </emr-change-button>
+
+    <!-- 评价信息查看对话框 -->
+    <evaluation-info-button
+      ref="evaluationInfoBtn"
+      :emr-id="currentEmrId">
+    </evaluation-info-button>
+
+    <!-- 评价信息更新对话框 -->
+    <evaluation-change-button
+      ref="evaluationUpdateBtn"
+      :id="currentEvaluationId"
+      create-or-update="update"
+      @submit-success="handleInfoRefresh">
+    </evaluation-change-button>
+
+    <!-- 评价信息创建对话框 -->
+    <evaluation-change-button
+      ref="evaluationCreateBtn"
+      :emr-id="currentEmrId"
+      :doctor-id="doctorId"
+      :patient-id="patientId"
+      create-or-update="create"
+      @submit-success="handleInfoRefresh">
+    </evaluation-change-button>
+
+    <!-- 公告信息查看对话框 -->
+    <notice-info-button
+      ref="noticeInfoBtn"
+      :notice-id="currentNoticeId">
+    </notice-info-button>
+
+    <!-- 公告信息更新对话框 -->
+    <notice-change-button
+      ref="noticeUpdateBtn"
+      :notice-id="currentNoticeId"
+      create-or-update="update"
+      @submit-success="handleInfoRefresh">
+    </notice-change-button>
+
+    <!-- 公告信息创建对话框 -->
+    <notice-change-button
+      ref="noticeCreateBtn"
+      :admin-id="adminId"
+      :admin-name="adminName"
+      create-or-update="create"
+      @submit-success="handleInfoRefresh">
+    </notice-change-button>
   </div>
 </template>
 
@@ -147,6 +238,10 @@ import DepartmentInfoButton from "@/components/services/button/info/departmentIn
 import DepartmentChangeButton from "@/components/services/button/change/departmentChangeButton.vue";
 import EmrInfoButton from "@/components/services/button/info/emrInfoButton.vue";
 import EmrChangeButton from "@/components/services/button/change/emrChangeButton.vue";
+import EvaluationInfoButton from "@/components/services/button/info/evaluationInfoButton.vue";
+import EvaluationChangeButton from "@/components/services/button/change/evaluationChangeButton.vue";
+import NoticeInfoButton from "@/components/services/button/info/noticeInfoButton.vue";
+import NoticeChangeButton from "@/components/services/button/change/noticeChangeButton.vue";
 
 export default {
   name: "DevPanel",
@@ -156,7 +251,11 @@ export default {
     DepartmentInfoButton,
     DepartmentChangeButton,
     EmrInfoButton,
-    EmrChangeButton
+    EmrChangeButton,
+    EvaluationInfoButton,
+    EvaluationChangeButton,
+    NoticeInfoButton,
+    NoticeChangeButton
   },
   data() {
     return {
@@ -164,7 +263,11 @@ export default {
       doctorId: "1915589781283328000",
       currentDepartmentId: "1916022805250674688", // 科室ID固定值
       currentEmrId: "1916122182308970496", // 病历ID
-      patientId: "1916105931234803712" // 患者ID
+      patientId: "1916105931234803712", // 患者ID
+      currentEvaluationId: "1916756386835312640", // 评价ID
+      currentNoticeId: "1916504501951889408", // 公告ID，根据实际情况修改
+      adminId: "1915199256639229952", // 管理员ID，用于创建公告
+      adminName: "系统管理员" // 管理员姓名，用于创建公告
     };
   },
   methods: {
@@ -205,6 +308,32 @@ export default {
 
     handleEmrCreate() {
       this.$refs.emrCreateBtn.openChangeDialog();
+    },
+
+    // 评价信息方法
+    handleEvaluationInfo() {
+      this.$refs.evaluationInfoBtn.openInfoDialog();
+    },
+
+    handleEvaluationUpdate() {
+      this.$refs.evaluationUpdateBtn.openChangeDialog();
+    },
+
+    handleEvaluationCreate() {
+      this.$refs.evaluationCreateBtn.openChangeDialog();
+    },
+
+    // 公告信息方法
+    handleNoticeInfo() {
+      this.$refs.noticeInfoBtn.openInfoDialog();
+    },
+
+    handleNoticeUpdate() {
+      this.$refs.noticeUpdateBtn.openChangeDialog();
+    },
+
+    handleNoticeCreate() {
+      this.$refs.noticeCreateBtn.openChangeDialog();
     },
 
     // 通用刷新方法

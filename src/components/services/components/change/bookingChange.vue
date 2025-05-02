@@ -136,21 +136,21 @@ export default {
   created() {
     // 更新模式下根据 id 获取数据
     if (this.createOrUpdate === 'update' && this.id) {
-      this.fetchBookingInfo()
+      // this.fetchBookingInfo()
     }
     // 创建模式下，初始化 doctorId
     else if (this.createOrUpdate === 'create') {
       this.bookingForm.doctorId = this.doctorId
     }
   },
-  mounted() {
-    if (this.createOrUpdate === 'update' && this.id) {
-      console.log('组件已挂载，准备获取预约数据')
-      this.$nextTick(() => {
-        this.fetchBookingInfo()
-      })
-    }
-  },
+  // mounted() {
+  //   if (this.createOrUpdate === 'update' && this.id) {
+  //     console.log('组件已挂载，准备获取预约数据')
+  //     this.$nextTick(() => {
+  //       this.fetchBookingInfo()
+  //     })
+  //   }
+  // },
   methods: {
     fetchBookingInfo() {
       if (!this.id) {

@@ -80,17 +80,17 @@ export default {
   created() {
     // 更新模式下根据 id 获取数据
     if (this.createOrUpdate === 'update' && this.id) {
-      this.fetchDepartmentInfo()
+      // this.fetchDepartmentInfo()
     }
   },
-  mounted() {
-    if (this.createOrUpdate === 'update' && this.id) {
-      console.log('组件已挂载，准备获取科室数据')
-      this.$nextTick(() => {
-        this.fetchDepartmentInfo()
-      })
-    }
-  },
+  // mounted() {
+  //   if (this.createOrUpdate === 'update' && this.id) {
+  //     console.log('组件已挂载，准备获取科室数据')
+  //     this.$nextTick(() => {
+  //       this.fetchDepartmentInfo()
+  //     })
+  //   }
+  // },
   methods: {
     fetchDepartmentInfo() {
       if (!this.id) {

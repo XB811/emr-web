@@ -22,7 +22,7 @@ export function deleteEvaluation(id) {
 //根据id查询评价
 export function queryEvaluationById(id) {
   return request({
-    url: `${servicesName}/v1/query/${id}`,
+    url: `${servicesName}/v1/queryById/${id}`,
     method: 'get'
   })
 }
@@ -32,5 +32,14 @@ export function queryEvaluationByEmrId(emrId) {
   return request({
     url: `${servicesName}/v1/queryByEmrId/${emrId}`,
     method: 'get'
+  })
+}
+
+//更新病历
+export function updateEvaluation(data){
+  return request({
+    url: `${servicesName}/v1/update`,
+    method: 'put',
+    data
   })
 }

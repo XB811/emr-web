@@ -14,7 +14,7 @@
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(255, 255, 255, 0.9)">
 
-      <el-card class="booking-info-card" shadow="hover">
+      <el-card class="booking-info-card" shadow="never">
         <div slot="header" class="card-header">
           <div class="booking-header">
             <el-avatar :size="50" icon="el-icon-date" class="booking-avatar"></el-avatar>
@@ -124,9 +124,9 @@ export default {
       immediate: true
     }
   },
-  created() {
-    this.fetchBookingInfo()
-  },
+  // created() {
+  //   this.fetchBookingInfo()
+  // },
   methods:{
     fetchBookingInfo() {
       if (!this.id) return

@@ -166,7 +166,7 @@ export default {
   created() {
     // 更新模式下根据 id 获取数据
     if (this.createOrUpdate === 'update' && this.id) {
-      this.fetchEmrInfo()
+      // this.fetchEmrInfo()
     } else if (this.createOrUpdate === 'create') {
       // 创建模式下，获取患者、医生、科室信息
       this.fetchPatientInfo()
@@ -174,14 +174,14 @@ export default {
       this.fetchDepartmentInfo()
     }
   },
-  mounted() {
-    if (this.createOrUpdate === 'update' && this.id) {
-      console.log('组件已挂载，准备获取病历数据')
-      this.$nextTick(() => {
-        this.fetchEmrInfo()
-      })
-    }
-  },
+  // mounted() {
+  //   if (this.createOrUpdate === 'update' && this.id) {
+  //     console.log('组件已挂载，准备获取病历数据')
+  //     this.$nextTick(() => {
+  //       this.fetchEmrInfo()
+  //     })
+  //   }
+  // },
   methods: {
     // 获取患者信息
     fetchPatientInfo() {

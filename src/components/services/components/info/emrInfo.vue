@@ -14,7 +14,7 @@
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(255, 255, 255, 0.9)">
 
-      <el-card class="emr-info-card" shadow="hover">
+      <el-card class="emr-info-card" shadow="never">
         <div slot="header" class="card-header">
           <div class="emr-header">
 <!--            <el-avatar :size="50" icon="el-icon-document" class="emr-avatar"></el-avatar>-->
@@ -150,9 +150,9 @@ export default {
       this.fetchEmrInfo()
     }
   },
-  created() {
-    this.fetchEmrInfo()
-  },
+  // created() {
+  //   this.fetchEmrInfo()
+  // },
   methods:{
     fetchEmrInfo() {
       if (!this.id) return

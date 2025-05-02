@@ -14,7 +14,7 @@
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(255, 255, 255, 0.9)">
 
-      <el-card class="department-info-card" shadow="hover">
+      <el-card class="department-info-card" shadow="never">
         <div slot="header" class="card-header">
           <div class="department-header">
             <el-avatar :size="50" icon="el-icon-office-building" class="department-avatar"></el-avatar>
@@ -89,9 +89,9 @@ export default {
       this.fetchDepartmentInfo()
     }
   },
-  created() {
-    this.fetchDepartmentInfo()
-  },
+  // created() {
+  //   this.fetchDepartmentInfo()
+  // },
   methods:{
     fetchDepartmentInfo() {
       if (!this.id) return
