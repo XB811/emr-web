@@ -41,7 +41,7 @@ export function checkLogin(accessToken,userType){
   return request({
     url:`${servicesName}/v1/check-login/${userType}`,
     method: 'get',
-    params: { accessToken }
+    params: { accessToken}
   })
 }
 

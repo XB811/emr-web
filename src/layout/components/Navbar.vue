@@ -75,9 +75,18 @@ import Breadcrumb from '@/components/Breadcrumb'
 // 导入汉堡菜单组件，控制侧边栏
 import Hamburger from '@/components/Hamburger'
 import {updatePassword} from "@/api/user";
+import {validPassword} from "@/utils/validate";
 
 export default {
   data() {
+    const validatePassword = (rule, value, callback) => {
+      // 密码长度校验
+      if (!validPassword(value)) {
+        callback(new Error('新密码的长度为6-16位之间'))
+      } else {
+        callback()
+      }
+    }
     return  {
       passForm: {
         oldPassword: '', // 旧密码
@@ -88,9 +97,8 @@ export default {
         oldPassword: [{required: true, message: '旧密码不能为空', trigger: 'blur'}], // 旧密码
         newPassword: [{required: true, message: '新密码不能为空', trigger: 'blur'}, {
           trigger: 'blur',
-          min: 6,
-          max: 16,
-          message: '新密码的长度为6-16位之间'
+          validator: validatePassword,
+          message: '新密码的长度为6-16位之间,包含字母数字特殊字符'
         }], // 新密码
         confirmPassword: [{required: true, message: '重复密码不能为空', trigger: 'blur'}, {
           trigger: 'blur',

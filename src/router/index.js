@@ -8,6 +8,7 @@ import Layout from '@/layout'
 import adminRoutes from './admin'
 import doctorRoutes from './doctor'
 import patientRoutes from './patient'
+import layout from "@/layout/index.vue";
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -45,7 +46,19 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
+  // 开发页面
+  {path: '/dev',
+    component: layout,
+    children: [
+      {
+        path: '',
+        name: 'dev',
+        component:  () => import('@/views/dev/dev.vue'),
+        meta: { title: '开发页面', icon: 'el-icon-s-tools' }
+      }
+    ]
 
+  },
   {
     path: '/',
     component: Layout,

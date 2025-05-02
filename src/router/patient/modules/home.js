@@ -4,7 +4,7 @@ export default {
   component: Layout,
   children: [{
     path: '',
-    component: () => import('@/views/doctor/home/index'),
+    component: () => import('@/views/patient/home/index'),
     name: 'home', //可以用来跳转， 也可以标记路由
     meta:{
       //路由元信息

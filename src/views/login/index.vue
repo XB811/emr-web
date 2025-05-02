@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left" @keyup.enter.native="handleLogin">
 
       <div class="title-container">
         <h3 class="title">登录</h3>
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+import {validPassword, validUsername} from '@/utils/validate'
 
 export default {
   name: 'Login',
@@ -85,8 +85,8 @@ export default {
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6 || value.length > 16) {
-        callback(new Error('密码长度在6到16个字符之间'))
+      if (!validPassword(value)) {
+        callback(new Error('密码至少包含字母、数字、特殊字符，长度为6-16位'))
       } else {
         callback()
       }
@@ -94,15 +94,17 @@ export default {
     return {
       loginForm: {
         usernameOrPhone: process.env.NODE_ENV === 'development' ? 'root' : '',
-        password: process.env.NODE_ENV === 'development' ? '123456' : '',
+        password: process.env.NODE_ENV === 'development' ? 'XBf20042611.' : '',
         userType: process.env.NODE_ENV === 'development' ? 'admin' : 'patient' // 添加用户类型，默认为管理员
       },
       // 表单验证规则 与el-form的:rules绑定
       loginRules: {
         // username 必填 输入框失去焦点时验证 使用validateUsername校验参数是否合法
-        usernameOrPhone: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        usernameOrPhone: [{required: true,trigger: 'blur',message:'用户名或手机号不能为空'},
+          { required: true, trigger: 'blur', validator: validateUsername }],
         // password 必填 输入框失去焦点时验证 使用validatePassword校验参数是否合法
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        password: [{required: true,trigger: 'blur',message:'密码不能为空'},
+          { required: true, trigger: 'blur', validator: validatePassword }],
         // userType 必填 选择框改变时验证 没有校验函数
         userType: [{ required: true, trigger: 'change' }]
       },
@@ -289,3 +291,4 @@ $light_gray:#eee;
   }
 }
 </style>
+
