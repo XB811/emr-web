@@ -69,6 +69,14 @@ export default {
       dialogVisible: false
     }
   },
+  created() {
+    // 组件创建时获取用户信息
+    this.$nextTick(() => {
+      if (this.$refs.adminInfoComponent) {
+        this.$refs.adminInfoComponent.fetchUserInfo();
+      }
+    });
+  },
   methods: {
     openChangeDialog() {
       this.dialogVisible = true

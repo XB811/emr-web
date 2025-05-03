@@ -2,8 +2,8 @@
   <div class="patient-change-container">
     <el-form ref="operatorForm" :model="operatorForm" :rules="operatorRules" label-width="80px" size="small" v-loading="loading">
       <!-- 创建时不显示用户名字段 -->
-      <el-form-item v-if="createOrUpdate === 'update'" label="用户名" prop="username" required="true">
-        <el-input v-model="operatorForm.username" disabled></el-input>
+      <el-form-item  label="用户名" prop="username" required="true">
+        <el-input v-model="operatorForm.username" :disabled="createOrUpdate === 'update'"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password" v-if="createOrUpdate === 'create'">
         <el-input v-model="operatorForm.password" :type="passwordType" ref="password">
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { queryActualByUserId, register, updateById } from "@/api/user"
+import {hasUsername, queryActualByUserId, register, updateById} from "@/api/user"
 import { validPassword, validPhone, validRealName, validUsername, validIdCard } from "@/utils/validate";
 
 export default {
@@ -53,9 +53,19 @@ export default {
   data(){
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('用户名或手机号不合法'))
+        callback(new Error('用户名不合法'))
       } else {
-        callback()
+        hasUsername(value, this.userType).then(response => {
+          // console.log(response)
+          if ( response.data === true) {
+            callback(new Error('用户名已存在'));
+          } else {
+            callback();
+          }
+        }).catch(error => {
+          console.error('验证用户名失败:', error);
+          callback(new Error('验证用户名失败'));
+        });
       }
     }
     const validatePassword = (rule, value, callback) => {
@@ -109,7 +119,7 @@ export default {
       loading: false,
       passwordType: 'password',
       operatorRules:{
-        username:[{require: true, trigger: 'blur',validator: validateUsername},],
+        username:[{require: true, trigger: 'blur',validator: validateUsername}],
         password:[{require: this.createOrUpdate==='create', trigger: 'blur',validator: validatePassword}],
         realName:[{require: true, trigger: 'blur',validator: validateRealName},],
         gender:[{

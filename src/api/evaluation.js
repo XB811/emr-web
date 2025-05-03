@@ -43,3 +43,15 @@ export function updateEvaluation(data){
     data
   })
 }
+// 分页查询
+export function pageQuery(data,current,size) {
+  return request({
+    url: `${servicesName}/v1/pageQuery`,
+    method: 'get',
+    params: {
+      ...data,
+      current,
+      size
+    }
+  })
+}

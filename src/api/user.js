@@ -94,3 +94,15 @@ export function deletion(username,userType){
     params: { username }
   })
 }
+// 分页查询
+export function pageQuery(data,current,size,userType) {
+  return request({
+    url: `${servicesName}/v1/pageQuery/${userType}`,
+    method: 'get',
+    params: {
+      ...data,
+      current,
+      size
+    }
+  })
+}

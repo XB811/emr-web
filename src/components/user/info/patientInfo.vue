@@ -111,9 +111,9 @@ export default {
       this.fetchUserInfo()
     }
   },
-  created() {
-    this.fetchUserInfo()
-  },
+  // created() {
+  //   this.fetchUserInfo()
+  // },
   methods:{
     fetchUserInfo() {
       if (!this.id || !this.userType) return

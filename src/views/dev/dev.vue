@@ -112,6 +112,72 @@
           </div>
         </el-card>
       </el-col>
+
+      <!-- 管理员信息管理卡片 -->
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <el-card shadow="hover" class="action-card">
+          <div slot="header" class="card-header">
+            <h2><i class="el-icon-user"></i> 管理员信息管理</h2>
+          </div>
+          <div class="action-buttons">
+            <el-button type="primary" plain class="action-button" @click="handleAdminInfo">
+              <i class="el-icon-view"></i> 查看管理员信息
+            </el-button>
+
+            <el-button type="success" plain class="action-button" @click="handleAdminUpdate">
+              <i class="el-icon-edit"></i> 修改管理员信息
+            </el-button>
+
+            <el-button type="warning" plain class="action-button" @click="handleAdminCreate">
+              <i class="el-icon-plus"></i> 创建管理员信息
+            </el-button>
+          </div>
+        </el-card>
+      </el-col>
+
+      <!-- 患者信息管理卡片 -->
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <el-card shadow="hover" class="action-card">
+          <div slot="header" class="card-header">
+            <h2><i class="el-icon-user"></i> 患者信息管理</h2>
+          </div>
+          <div class="action-buttons">
+            <el-button type="primary" plain class="action-button" @click="handlePatientInfo">
+              <i class="el-icon-view"></i> 查看患者信息
+            </el-button>
+
+            <el-button type="success" plain class="action-button" @click="handlePatientUpdate">
+              <i class="el-icon-edit"></i> 修改患者信息
+            </el-button>
+
+            <el-button type="warning" plain class="action-button" @click="handlePatientCreate">
+              <i class="el-icon-plus"></i> 创建患者信息
+            </el-button>
+          </div>
+        </el-card>
+      </el-col>
+
+      <!-- 医生信息管理卡片 -->
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <el-card shadow="hover" class="action-card">
+          <div slot="header" class="card-header">
+            <h2><i class="el-icon-user"></i> 医生信息管理</h2>
+          </div>
+          <div class="action-buttons">
+            <el-button type="primary" plain class="action-button" @click="handleDoctorInfo">
+              <i class="el-icon-view"></i> 查看医生信息
+            </el-button>
+
+            <el-button type="success" plain class="action-button" @click="handleDoctorUpdate">
+              <i class="el-icon-edit"></i> 修改医生信息
+            </el-button>
+
+            <el-button type="warning" plain class="action-button" @click="handleDoctorCreate">
+              <i class="el-icon-plus"></i> 创建医生信息
+            </el-button>
+          </div>
+        </el-card>
+      </el-col>
     </el-row>
 
     <!-- 预约时间查看对话框 -->
@@ -228,6 +294,78 @@
       create-or-update="create"
       @submit-success="handleInfoRefresh">
     </notice-change-button>
+
+    <!-- 管理员信息查看对话框 -->
+    <admin-info-button
+      ref="adminInfoBtn"
+      :id="adminId"
+      :user-type="'admin'">
+    </admin-info-button>
+
+    <!-- 管理员信息更新对话框 -->
+    <admin-change-button
+      ref="adminUpdateBtn"
+      :id="adminId"
+      :user-type="'admin'"
+      create-or-update="update"
+      @update-success="handleInfoRefresh">
+    </admin-change-button>
+
+    <!-- 管理员信息创建对话框 -->
+    <admin-change-button
+      ref="adminCreateBtn"
+      :user-type="'admin'"
+      create-or-update="create"
+      @update-success="handleInfoRefresh">
+    </admin-change-button>
+
+    <!-- 患者信息查看对话框 -->
+    <patient-info-button
+      ref="patientInfoBtn"
+      :id="patientId"
+      :user-type="'patient'">
+    </patient-info-button>
+
+    <!-- 患者信息更新对话框 -->
+    <patient-change-button
+      ref="patientUpdateBtn"
+      :id="patientId"
+      :user-type="'patient'"
+      create-or-update="update"
+      @update-success="handleInfoRefresh">
+    </patient-change-button>
+
+    <!-- 患者信息创建对话框 -->
+    <patient-change-button
+      ref="patientCreateBtn"
+      :user-type="'patient'"
+      create-or-update="create"
+      @update-success="handleInfoRefresh">
+    </patient-change-button>
+
+    <!-- 医生信息查看对话框 -->
+    <doctor-info-button
+      ref="doctorInfoBtn"
+      :id="doctorId"
+      :user-type="'doctor'">
+    </doctor-info-button>
+
+    <!-- 医生信息更新对话框 -->
+    <doctor-change-button
+      ref="doctorUpdateBtn"
+      :id="doctorId"
+      :user-type="'doctor'"
+      create-or-update="update"
+      @update-success="handleInfoRefresh">
+    </doctor-change-button>
+
+    <!-- 医生信息创建对话框 -->
+    <doctor-change-button
+      ref="doctorCreateBtn"
+      :user-type="'doctor'"
+      create-or-update="create"
+      @update-success="handleInfoRefresh">
+    </doctor-change-button>
   </div>
 </template>
 
@@ -242,6 +380,12 @@ import EvaluationInfoButton from "@/components/services/button/info/evaluationIn
 import EvaluationChangeButton from "@/components/services/button/change/evaluationChangeButton.vue";
 import NoticeInfoButton from "@/components/services/button/info/noticeInfoButton.vue";
 import NoticeChangeButton from "@/components/services/button/change/noticeChangeButton.vue";
+import AdminInfoButton from "@/components/user/button/adminInfoButton.vue";
+import AdminChangeButton from "@/components/user/button/admineChangeButton.vue";
+import PatientInfoButton from "@/components/user/button/patientInfoButton.vue";
+import PatientChangeButton from "@/components/user/button/patientChangeButton.vue";
+import DoctorInfoButton from "@/components/user/button/doctorInfoButton.vue";
+import DoctorChangeButton from "@/components/user/button/doctorChangeButton.vue";
 
 export default {
   name: "DevPanel",
@@ -255,7 +399,13 @@ export default {
     EvaluationInfoButton,
     EvaluationChangeButton,
     NoticeInfoButton,
-    NoticeChangeButton
+    NoticeChangeButton,
+    AdminInfoButton,
+    AdminChangeButton,
+    PatientInfoButton,
+    PatientChangeButton,
+    DoctorInfoButton,
+    DoctorChangeButton
   },
   data() {
     return {
@@ -266,7 +416,7 @@ export default {
       patientId: "1916105931234803712", // 患者ID
       currentEvaluationId: "1916756386835312640", // 评价ID
       currentNoticeId: "1916504501951889408", // 公告ID，根据实际情况修改
-      adminId: "1915199256639229952", // 管理员ID，用于创建公告
+      adminId: "1909682792019578880", // 管理员ID，用于创建公告
       adminName: "系统管理员" // 管理员姓名，用于创建公告
     };
   },
@@ -334,6 +484,45 @@ export default {
 
     handleNoticeCreate() {
       this.$refs.noticeCreateBtn.openChangeDialog();
+    },
+
+    // 管理员信息相关方法
+    handleAdminInfo() {
+      this.$refs.adminInfoBtn.openInfoDialog();
+    },
+
+    handleAdminUpdate() {
+      this.$refs.adminUpdateBtn.openChangeDialog();
+    },
+
+    handleAdminCreate() {
+      this.$refs.adminCreateBtn.openChangeDialog();
+    },
+
+    // 患者信息相关方法
+    handlePatientInfo() {
+      this.$refs.patientInfoBtn.openInfoDialog();
+    },
+
+    handlePatientUpdate() {
+      this.$refs.patientUpdateBtn.openChangeDialog();
+    },
+
+    handlePatientCreate() {
+      this.$refs.patientCreateBtn.openChangeDialog();
+    },
+
+    // 医生信息相关方法
+    handleDoctorInfo() {
+      this.$refs.doctorInfoBtn.openInfoDialog();
+    },
+
+    handleDoctorUpdate() {
+      this.$refs.doctorUpdateBtn.openChangeDialog();
+    },
+
+    handleDoctorCreate() {
+      this.$refs.doctorCreateBtn.openChangeDialog();
     },
 
     // 通用刷新方法

@@ -37,7 +37,12 @@ import layout from "@/layout/index.vue";
 export const constantRoutes = [
   {
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () => import('@/views/common/login/index'),
+    hidden: true
+  },
+  {
+    path: '/registration',
+    component:() => import('@/views/common/registration/index'),
     hidden: true
   },
 
@@ -49,11 +54,13 @@ export const constantRoutes = [
   // 开发页面
   {path: '/dev',
     component: layout,
+    hidden:  process.env.NODE_ENV !== 'development',
     children: [
       {
         path: '',
         name: 'dev',
-        component:  () => import('@/views/dev/dev.vue'),
+        component:  () =>  process.env.NODE_ENV === 'development'?
+              import('@/views/dev/dev.vue'):import('@/views/404.vue'),
         meta: { title: '开发页面', icon: 'el-icon-s-tools' }
       }
     ]

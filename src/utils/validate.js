@@ -17,6 +17,9 @@ export function isExternal(path) {
 export function validUsername(str) {
   // return valid_map.indexOf(str.trim()) >= 0
   // 校验规则为 用户名只能包含字母、数字和下划线，长度在1到20之间
+  if(str === null || str === undefined){
+    return false
+  }
   return str.length > 0 && str.length < 20 && /^[a-zA-Z0-9_]+$/.test(str)
 }
 /**

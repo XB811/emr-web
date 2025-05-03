@@ -2,7 +2,7 @@
   <div class="doctor-change-container">
     <el-form ref="operatorForm" :model="operatorForm" :rules="operatorRules" label-width="80px" size="small" v-loading="loading">
       <!-- 创建时不显示用户名字段 -->
-      <el-form-item v-if="createOrUpdate === 'update'" label="用户名" prop="username" required="true">
+      <el-form-item v-if = "createOrUpdate === 'update'" label="用户名" prop="username" required="true">
         <el-input v-model="operatorForm.username" disabled></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password" v-if="createOrUpdate === 'create'">
@@ -119,10 +119,7 @@ export default {
         phone: null,
         userType: this.userType,
         title: null,
-        gender: {
-          type: String,
-          default: false,
-        },
+        gender: null,
         departmentId: null,
         specialty: []
       },
@@ -218,7 +215,7 @@ export default {
     } else {
       this.operatorForm = this.updateForm;
       // 如果是 update，获取用户信息填充表单
-      this.getUserInfo();
+      // this.getUserInfo();
     }
   },
   methods: {
@@ -273,10 +270,6 @@ export default {
               }
             }
           }
-        })
-        .catch(error => {
-          console.error('获取医生信息失败:', error);
-          this.$message.error('获取医生信息失败');
         })
         .finally(() => {
           this.loading = false;
@@ -372,21 +365,20 @@ export default {
             .then(response => {
               console.log(response);
               if (response && response.code === "0") {  // 修改为字符串"0"匹配
+                console.log(this.createOrUpdate === 'create' ? '注册成功！' : '更新成功！')
                 this.$message.success(this.createOrUpdate === 'create' ? '注册成功！' : '更新成功！');
                 this.$emit('update-success', this.operatorForm);
               } else {
                 throw new Error(response.message || '操作失败');
               }
             })
-            .catch(error => {
-              console.error(this.createOrUpdate === 'create' ? '注册失败:' : '更新失败:', error);
-              this.$message.error(error.message || (this.createOrUpdate === 'create' ? '注册失败' : '更新失败'));
-            })
             .finally(() => {
               this.loading = false;
             });
           // 刷新组件的数据
-          this.getUserInfo();
+          if(this.createOrUpdate === 'update') {
+            this.getUserInfo();
+          }
         } else {
           console.log('参数不合法')
           return false

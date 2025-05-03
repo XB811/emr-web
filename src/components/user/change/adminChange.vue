@@ -17,6 +17,61 @@
         <el-input v-model="operatorForm.phone"></el-input>
       </el-form-item>
     </el-form>
+
+    <!-- 创建成功信息弹窗 -->
+    <el-dialog
+      title="创建成功"
+      :visible.sync="successDialogVisible"
+      width="400px"
+      :append-to-body="true"
+      :close-on-click-modal="false"
+      custom-class="success-dialog">
+      <div class="success-info">
+        <div class="success-icon-container">
+          <i class="el-icon-success success-icon"></i>
+        </div>
+        <h3 class="success-title">用户创建成功</h3>
+        <el-descriptions
+          :column="1"
+          border
+          class="success-descriptions"
+          :label-style="{
+            'background-color': '#f7f9fc',
+            'font-weight': 'bold',
+            'color': '#606266',
+            'padding': '12px 15px'
+          }"
+          :content-style="{
+            'padding': '12px 15px'
+          }">
+          <el-descriptions-item label="用户名">
+            <div>
+              <span>用户名：</span>
+            <span class="user-info-value">{{ createdUserInfo.username }}</span>
+            </div>
+          </el-descriptions-item>
+          <el-descriptions-item label="真实姓名">
+            <div>
+            <span>真实姓名：</span>
+            <span class="user-info-value">{{ createdUserInfo.realName }}</span>
+            </div>
+          </el-descriptions-item>
+          <el-descriptions-item label="联系电话">
+            <div>
+            <span>联系电话：</span>
+            <span class="user-info-value">{{ createdUserInfo.phone }}</span>
+            </div>
+          </el-descriptions-item>
+        </el-descriptions>
+        <div class="success-tips">
+          <i class="el-icon-warning-outline"></i>
+          <span>请妥善保存以上账户信息</span>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" size="medium" @click="closeSuccessDialog">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -32,7 +87,8 @@ export default {
     },
     id:{
       type: [String, Number],
-      required: true,
+      required: function() { return this.createOrUpdate === 'update'; },
+      default: null
     },
     createOrUpdate:{
       type: String,
@@ -95,6 +151,14 @@ export default {
       loading: false,
       // 控制密码框的显示类型，默认为password
       passwordType: 'password',
+      // 创建成功弹窗
+      successDialogVisible: false,
+      // 创建成功的用户信息
+      createdUserInfo: {
+        username: '',
+        realName: '',
+        phone: ''
+      }
     }
   },
   created() {
@@ -121,6 +185,7 @@ export default {
       })
     },
     getUserInfo() {
+      if(this.id === null || this.userType === null) return;
       this.loading = true;
       queryActualByUserId(this.id,this.userType)
         .then(response => {
@@ -142,6 +207,12 @@ export default {
         });
     },
 
+    closeSuccessDialog() {
+      this.successDialogVisible = false;
+      // 通知父组件操作成功
+      this.$emit('update-success', this.operatorForm);
+    },
+
     submitForm() {
       // 根据 createOrUpdate 决定调用哪个API
       this.$refs.operatorForm.validate(valid => {
@@ -153,13 +224,25 @@ export default {
 
             apiRequest
               .then(response => {
-                console.log(response);
-                if (response && response.code === "0") {
-                  this.$message.success(this.createOrUpdate === 'create' ? '注册成功！' : '更新成功！');
-                  // 将事件名称从 submit-success 改为 update-success
-                  this.$emit('update-success', this.operatorForm);
+                console.log('API响应:', response);
+                // 修改这里，处理不同的返回码情况
+                if (response) {
+                  if (this.createOrUpdate === 'create') {
+                    // 保存创建成功的用户信息
+                    this.createdUserInfo = response.data || {};
+                    console.log('创建的用户信息:', this.createdUserInfo);
+
+                    // 确保成功对话框显示在当前操作完成后
+                    this.$nextTick(() => {
+                      this.successDialogVisible = true;
+                    });
+                  } else {
+                    this.$message.success('更新成功！');
+                    // 触发更新成功事件
+                    this.$emit('update-success', this.operatorForm);
+                  }
                 } else {
-                  throw new Error(response.message || '操作失败');
+                  throw new Error(response?.message || '操作失败');
                 }
               })
               .catch(error => {
@@ -169,9 +252,7 @@ export default {
               .finally(() => {
                 this.loading = false;
               });
-            // 刷新组件的数据
-            this.getUserInfo();
-          }else {
+          } else {
             // 表单验证失败
             console.log('参数不合法')
             return false
@@ -197,5 +278,95 @@ export default {
 
 .el-form-item {
   margin-bottom: 18px;
+}
+
+/* 成功弹窗样式优化 */
+.success-info {
+  text-align: center;
+  padding: 10px 0 20px;
+}
+
+.success-icon-container {
+  background-color: rgba(103, 194, 58, 0.1);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-icon {
+  font-size: 50px;
+  color: #67C23A;
+}
+
+.success-title {
+  margin-bottom: 25px;
+  color: #303133;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.success-descriptions {
+  margin: 0 auto;
+  text-align: left;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.user-info-value {
+  color: #303133;
+  font-weight: 500;
+}
+
+.success-tips {
+  margin-top: 20px;
+  color: #E6A23C;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+/* 确保弹窗显示在最上层 */
+:deep(.success-dialog) {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+:deep(.el-dialog__header) {
+  padding: 16px 20px;
+  background-color: #f7f9fc;
+  border-bottom: 1px solid #ebeef5;
+}
+
+:deep(.el-dialog__title) {
+  color: #303133;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+:deep(.el-dialog__body) {
+  padding: 25px 25px 10px;
+}
+
+:deep(.el-dialog__footer) {
+  padding: 15px 20px 20px;
+  text-align: center;
+}
+
+:deep(.el-button--primary) {
+  padding: 10px 24px;
+}
+
+:deep(.el-dialog__wrapper) {
+  z-index: 3000 !important;
+}
+
+:deep(.v-modal) {
+  z-index: 2999 !important;
 }
 </style>

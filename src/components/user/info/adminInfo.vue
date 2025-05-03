@@ -100,9 +100,6 @@ export default {
       this.fetchUserInfo()
     }
   },
-  created() {
-    this.fetchUserInfo()
-  },
   methods:{
     fetchUserInfo() {
       if (!this.id || !this.userType) return
@@ -111,10 +108,17 @@ export default {
 
       apiMethod(this.id, this.userType)
         .then(response => {
-          this.userInfo = response.data
+          if (response && response.data) {
+            this.userInfo = response.data
+          } else {
+            this.userInfo = null
+            this.$message.error('未能获取到用户信息')
+          }
         })
         .catch(error => {
           console.error('获取用户信息失败:', error)
+          this.userInfo = null
+          this.$message.error('获取用户信息失败')
         })
         .finally(() => {
           this.loading = false
@@ -123,7 +127,7 @@ export default {
     clickPhone(){
       if (!this.id || !this.userType) return
       const apiMethod = this.isActual ? queryByUserId : queryActualByUserId
-    this.isActual = !this.isActual
+      this.isActual = !this.isActual
       apiMethod(this.id, this.userType)
         .then(response => {
           this.userInfo.phone = response.data.phone
@@ -260,4 +264,3 @@ export default {
   align-items: center;
 }
 </style>
-

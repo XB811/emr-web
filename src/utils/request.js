@@ -68,11 +68,11 @@ service.interceptors.response.use(
         }
       }
       // 使用返回的错误信息进行提示
-      // Message({
-      //   message: res.message || 'Error',
-      //   type: 'error',
-      //   duration: 5 * 1000
-      // })
+      Message({
+        message: res.message || 'Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
       // console.log('res.code1', res.code)
       // 这段是 非法tooken/其他客户端登录/Token过期的处理
       // 暂时不考虑改写，根据后面需求模仿这个再写
