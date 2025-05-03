@@ -3,7 +3,7 @@
 
 
 
-    <el-card class="table-container" shadow="hover">
+    <el-card class="table-container" shadow="never">
       <!-- 搜索栏 -->
       <el-form :inline="true" :model="searchForm" class="search-form">
         <el-form-item label="用户名">
@@ -63,7 +63,7 @@
         <el-table-column
           label="操作"
           align="center"
-          width="260"
+          width="340"
         >
           <template slot-scope="scope">
             <div class="action-buttons">
@@ -78,6 +78,14 @@
                   icon="el-icon-view"
                 >详情</el-button>
               </admin-info-button>
+
+              <!-- 查看公告按钮 -->
+              <el-button
+                size="mini"
+                type="success"
+                icon="el-icon-document"
+                @click="viewNotices(scope.row)"
+              >查看公告</el-button>
 
               <!-- 编辑按钮 -->
               <admin-change-button
@@ -154,6 +162,9 @@ export default {
   },
   created() {
     // 页面加载时获取数据
+    this.searchForm.username =this.$route.query.username
+    this.searchForm.realName = this.$route.query.realName
+    this.searchForm.phone = this.$route.query.phone
     this.fetchData()
   },
   methods: {
@@ -251,6 +262,22 @@ export default {
       }).catch(() => {
         this.$message.info('已取消删除')
       })
+    },
+
+    // 查看管理员发布的公告
+    viewNotices(row) {
+      if (!row || !row.id) {
+        this.$message.error('无效的管理员信息')
+        return
+      }
+
+      // 跳转到公告管理页面，并传递管理员ID
+      this.$router.push({
+        path: '/notice',
+        query: {
+          adminId: row.id
+        }
+      })
     }
   }
 }
@@ -306,7 +333,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 /* 确保按钮等宽 */
@@ -314,8 +341,8 @@ export default {
   min-width: 68px;
   margin-left: 0;
   margin-right: 0;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 /* 表格样式增强 */

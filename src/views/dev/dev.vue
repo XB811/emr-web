@@ -5,7 +5,7 @@
     <el-row :gutter="20">
       <!-- 预约时间管理卡片 -->
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-        <el-card shadow="hover" class="action-card">
+        <el-card shadow="never" class="action-card">
           <div slot="header" class="card-header">
             <h2><i class="el-icon-date"></i> 预约时间管理</h2>
           </div>
@@ -27,7 +27,7 @@
 
       <!-- 科室信息管理卡片 -->
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-        <el-card shadow="hover" class="action-card">
+        <el-card shadow="never" class="action-card">
           <div slot="header" class="card-header">
             <h2><i class="el-icon-office-building"></i> 科室信息管理</h2>
           </div>
@@ -49,7 +49,7 @@
 
       <!-- 病历信息管理卡片 -->
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-        <el-card shadow="hover" class="action-card">
+        <el-card shadow="never" class="action-card">
           <div slot="header" class="card-header">
             <h2><i class="el-icon-document-checked"></i> 病历信息管理</h2>
           </div>
@@ -71,7 +71,7 @@
 
       <!-- 评价信息管理卡片 -->
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-        <el-card shadow="hover" class="action-card">
+        <el-card shadow="never" class="action-card">
           <div slot="header" class="card-header">
             <h2><i class="el-icon-s-comment"></i> 就诊评价</h2>
           </div>
@@ -93,7 +93,7 @@
 
       <!-- 公告信息管理卡片 -->
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-        <el-card shadow="hover" class="action-card">
+        <el-card shadow="never" class="action-card">
           <div slot="header" class="card-header">
             <h2><i class="el-icon-bell"></i> 公告信息管理</h2>
           </div>
@@ -115,7 +115,7 @@
 
       <!-- 管理员信息管理卡片 -->
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-        <el-card shadow="hover" class="action-card">
+        <el-card shadow="never" class="action-card">
           <div slot="header" class="card-header">
             <h2><i class="el-icon-user"></i> 管理员信息管理</h2>
           </div>
@@ -137,7 +137,7 @@
 
       <!-- 患者信息管理卡片 -->
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-        <el-card shadow="hover" class="action-card">
+        <el-card shadow="never" class="action-card">
           <div slot="header" class="card-header">
             <h2><i class="el-icon-user"></i> 患者信息管理</h2>
           </div>
@@ -159,7 +159,7 @@
 
       <!-- 医生信息管理卡片 -->
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-        <el-card shadow="hover" class="action-card">
+        <el-card shadow="never" class="action-card">
           <div slot="header" class="card-header">
             <h2><i class="el-icon-user"></i> 医生信息管理</h2>
           </div>

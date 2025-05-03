@@ -106,3 +106,9 @@ export function pageQuery(data,current,size,userType) {
     }
   })
 }
+  export function queryAll(userType) {
+  return request({
+    url: `${servicesName}/v1/queryAll/${userType}`,
+    method: 'get'
+  })
+}

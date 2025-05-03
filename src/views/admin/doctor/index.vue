@@ -96,7 +96,7 @@
         <el-table-column
           label="操作"
           align="center"
-          min-width="240"
+          min-width="370"
         >
           <template slot-scope="scope">
             <div class="action-buttons">
@@ -112,6 +112,33 @@
                   plain
                 >详情</el-button>
               </doctor-info-button>
+
+              <!-- 预约时间按钮 -->
+              <booking-info-button
+                :doctor-id ="scope.row.id"
+                >
+                <el-button
+                  size="mini"
+                  type="info"
+                  icon="el-icon-time"
+                >可预约时间</el-button>
+              </booking-info-button>
+
+              <!-- 查看病历按钮 -->
+              <el-button
+                size="mini"
+                type="success"
+                icon="el-icon-document"
+                @click="viewEmr(scope.row)"
+              >查看病历</el-button>
+
+              <!-- 查看评价按钮 -->
+              <el-button
+                size="mini"
+                type="success"
+                icon="el-icon-star-on"
+                @click="viewEvaluation(scope.row)"
+              >查看评价</el-button>
 
               <!-- 编辑按钮 -->
               <doctor-change-button
@@ -162,10 +189,12 @@ import { pageQuery, deletion } from '@/api/user'
 import { queryAllDepartments } from '@/api/department'
 import DoctorChangeButton from '@/components/user/button/doctorChangeButton'
 import DoctorInfoButton from '@/components/user/button/doctorInfoButton'
+import BookingInfoButton from "@/components/services/button/info/bookingInfoButton.vue";
 
 export default {
   name: 'DoctorManagement',
   components: {
+    BookingInfoButton,
     DoctorChangeButton,
     DoctorInfoButton
   },
@@ -195,9 +224,14 @@ export default {
     }
   },
   created() {
-    // 先获取所有科室
-    this.fetchDepartments()
+    // // 先获取所有科室
+    // this.fetchDepartments()
     // 页面加载时获取数据
+    // console.log(this.$route.params.departmentId)
+    this.searchForm.departmentId = this.$route.query.departmentId
+    this.searchForm.realName = this.$route.query.realName
+    this.searchForm.phone = this.$route.query.phone
+    this.searchForm.username = this.$route.query.username
     this.fetchData()
   },
   methods: {
@@ -238,7 +272,6 @@ export default {
         phone: this.searchForm.phone || undefined,
         departmentId: this.searchForm.departmentId || undefined
       }
-
       pageQuery(
         params,
         this.pagination.current,
@@ -296,7 +329,39 @@ export default {
     handleUpdateSuccess(operation) {
       const message = operation === 'create' ? '医生创建成功' : '医生信息更新成功';
       this.$message.success(message);
-      this.fetchData(); // 刷新数��
+      this.fetchData(); // 刷新数据
+    },
+
+    // 查看医生的病历
+    viewEmr(row) {
+      if (!row || !row.id) {
+        this.$message.error('无效的医生信息')
+        return
+      }
+
+      // 跳转到电子病历页面，并传递医生ID
+      this.$router.push({
+        path: '/emr',
+        query: {
+          doctorId: row.id,
+        }
+      })
+    },
+
+    // 查看医生的评价
+    viewEvaluation(row) {
+      if (!row || !row.id) {
+        this.$message.error('无效的医生信息')
+        return
+      }
+
+      // 跳转到评价页面，并传递医生ID
+      this.$router.push({
+        path: '/evaluation',
+        query: {
+          doctorId: row.id
+        }
+      })
     },
 
     // 处理删除操作
@@ -434,13 +499,15 @@ export default {
 
 .action-buttons {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  padding: 5px 0;
 
   .el-button {
     min-width: 76px;
-    margin: 0 4px;
+    margin: 2px;
 
     [class^="el-icon-"] {
       margin-right: 3px;

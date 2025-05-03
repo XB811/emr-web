@@ -9,7 +9,7 @@ import getPageTitle from '@/utils/get-page-title'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 // 白名单
-const whiteList = ['/login', '/404','/registration'] // no redirect whitelist
+const whiteList = ['/login', '/404','/register'] // no redirect whitelist
 
 // 路由前置守卫
 router.beforeEach(async(to, from, next) => {

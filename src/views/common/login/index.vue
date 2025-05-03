@@ -98,8 +98,8 @@
           </el-form-item>
           <!-- 确认按钮 -->
           <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
-          <div class="registration-link">
-          <router-link to="/registration">立即注册</router-link>
+          <div class="register-link">
+          <router-link to="/register">立即注册</router-link>
           </div>
         </el-form>
 
@@ -450,7 +450,7 @@ $light_gray:#eee;
     cursor: pointer;
     user-select: none;
   }
-  .registration-link {
+  .register-link {
     text-align: center;
     margin-bottom: 10px;
     color: $dark_gray;

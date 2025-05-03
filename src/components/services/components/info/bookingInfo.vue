@@ -73,14 +73,17 @@
 </template>
 
 <script>
-import { queryById } from "@/api/booking" // 需要在api目录下创建booking.js
+import {queryByDoctorId, queryById} from "@/api/booking" // 需要在api目录下创建booking.js
 
 export default {
   name: "bookingInfo",
   props:{
     id:{
       type: [String, Number],
-      required: true,
+      //required: true,
+    },
+    doctorId:{
+      type: [String, Number]
     }
   },
   data(){
@@ -122,27 +125,75 @@ export default {
         }
       },
       immediate: true
+    },
+    doctorId() {
+      this.fetchBookingInfo()
     }
   },
   // created() {
   //   this.fetchBookingInfo()
   // },
   methods:{
-    fetchBookingInfo() {
-      if (!this.id) return
+     fetchBookingInfo() {
+      if (!this.id && !this.doctorId) return Promise.reject('没有提供ID参数')
       this.loading = true
 
-      queryById(this.id)
-        .then(response => {
-          this.bookingInfo = response.data
-          this.updateScheduleData()
-        })
-        .catch(error => {
-          console.error('获取预约信息失败:', error)
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      let promise
+      if(this.id){
+        promise = queryById(this.id)
+          .then(response => {
+            if (response && response.data) {
+              this.bookingInfo = response.data
+              this.updateScheduleData()
+              // 发送加载成功事件
+              this.$emit('info-loaded', response.data)
+              return response.data
+            } else {
+              this.bookingInfo = null
+              // 发送加载失败事件
+              this.$emit('info-failed')
+              return Promise.reject('没有找到预约信息')
+            }
+          })
+          .catch(error => {
+            console.error('获取预约信息失败:', error)
+            this.bookingInfo = null
+            // 发送加载失败事件
+            this.$emit('info-failed')
+            return Promise.reject(error)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+      } else {
+        promise = queryByDoctorId(this.doctorId)
+          .then(response => {
+            if (response && response.data) {
+              this.bookingInfo = response.data
+              this.updateScheduleData()
+              // 发送加载成功事件
+              this.$emit('info-loaded', response.data)
+              return response.data
+            } else {
+              this.bookingInfo = null
+              // 发送加载失败事件
+              this.$emit('info-failed')
+              return Promise.reject('没有找到预约信息')
+            }
+          })
+          .catch(error => {
+            console.error('获取预约信息失败:', error)
+            this.bookingInfo = null
+            // 发送加载失败事件
+            this.$emit('info-failed')
+            return Promise.reject(error)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+      }
+
+      return promise
     },
 
     // 将availableTime转换为14位二进制字符串
@@ -395,4 +446,3 @@ export default {
   align-items: center;
 }
 </style>
-

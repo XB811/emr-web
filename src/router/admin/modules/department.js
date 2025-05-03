@@ -9,7 +9,7 @@ export default {
     name: 'Department',
     meta:{
       //路由元信息
-      title: '部门管理', //用于显示在侧边栏和面包屑导航中
+      title: '科室管理', //用于显示在侧边栏和面包屑导航中
       icon: 'department', //用于显示在侧边栏中
     }
   }]

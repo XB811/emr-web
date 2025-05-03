@@ -14,7 +14,7 @@
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(255, 255, 255, 0.9)">
 
-      <el-card class="user-info-card" shadow="hover">
+      <el-card class="user-info-card" shadow="never">
         <div slot="header" class="card-header">
           <div class="user-header">
             <el-avatar :size="80" icon="el-icon-user" class="user-avatar"></el-avatar>

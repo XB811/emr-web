@@ -14,7 +14,7 @@
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(255, 255, 255, 0.9)">
 
-      <el-card class="user-info-card" shadow="hover">
+      <el-card class="user-info-card" shadow="never">
         <div slot="header" class="card-header">
           <div class="user-header">
             <el-avatar :size="80" icon="el-icon-s-custom" class="user-avatar"></el-avatar>
@@ -72,9 +72,9 @@
               <span class="info-content">{{ departmentName || '未设置' }}</span>
             </div>
           </el-descriptions-item>
-          <el-descriptions-item label="专业领域">
+          <el-descriptions-item label="专长">
             <div class="info-item">
-              <span class="field-label"><i class="el-icon-collection-tag"></i> 专业领域：</span>
+              <span class="field-label"><i class="el-icon-collection-tag"></i> 专长：</span>
               <div class="specialty-tags">
                 <el-tag size="small" v-for="(specialty, index) in specialtyList" :key="index" style="margin-right: 5px;">
                   {{ specialty }}

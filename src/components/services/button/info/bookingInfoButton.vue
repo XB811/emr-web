@@ -15,6 +15,7 @@
     <booking-info
       v-if="infoDialogVisible"
       :id="bookingId"
+      :doctor-id="doctorId"
       ref="bookingInfoComponent">
     </booking-info>
     <span slot="footer" class="dialog-footer">
@@ -35,7 +36,9 @@ export default {
   props: {
     bookingId: {
       type: [String, Number],
-      required: true
+    },
+    doctorId:{
+      type: [String, Number],
     }
   },
   data() {

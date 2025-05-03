@@ -185,6 +185,10 @@ export default {
   },
   created() {
     // 页面加载时获取数据
+    this.searchForm.username = this.$route.query.username
+    this.searchForm.realName = this.$route.query.realName
+    this.searchForm.phone = this.$route.query.phone
+    this.searchForm.idCard = this.$route.query.idCard
     this.fetchData()
   },
   methods: {

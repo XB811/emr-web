@@ -129,10 +129,6 @@ export default {
             this.fetchUserInfo()
           }
         })
-        .catch(error => {
-          console.error('获取评价信息失败:', error)
-          this.$message.error('获取评价信息失败')
-        })
         .finally(() => {
           this.loading = false
         })

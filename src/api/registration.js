@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-
+import qs from 'qs'
 const servicesName = '/registration-services'
 // 创建挂号
 export function createRegistration(data) {
@@ -51,6 +51,10 @@ export function pageQuery(data,current,size) {
       ...data,
       current,
       size
+    },
+    paramsSerializer: params =>{
+      return qs.stringify(params, {
+        arrayFormat: 'comma' })
     }
   })
 }

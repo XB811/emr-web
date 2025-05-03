@@ -46,14 +46,14 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="专业领域" prop="specialties">
+      <el-form-item label="专长" prop="specialties">
         <el-select
           v-model="operatorForm.specialty"
           multiple
           filterable
           allow-create
           default-first-option
-          placeholder="请选择专业领域（可多选或自定义）">
+          placeholder="请选择擅长（可多选或自定义）">
           <el-option v-for="item in specialtyOptions" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-form-item>

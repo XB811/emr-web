@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-card class="table-container" shadow="hover">
+    <el-card class="table-container" shadow="never">
       <!-- 搜索栏 -->
       <el-form :inline="true" :model="searchForm" class="search-form">
         <el-form-item label="科室编码">
@@ -59,10 +59,18 @@
         <el-table-column
           label="操作"
           align="center"
-          width="260"
+          width="340"
         >
           <template slot-scope="scope">
             <div class="action-buttons">
+              <!-- 查看医生按钮 -->
+              <el-button
+                size="mini"
+                type="success"
+                icon="el-icon-user"
+                @click="viewDoctors(scope.row)"
+              >查看医生</el-button>
+
               <!-- 详情按钮 -->
               <department-info-button
                 :department-id="scope.row.id"
@@ -148,6 +156,9 @@ export default {
   },
   created() {
     // 页面加载时获取数据
+    this.searchForm.code = this.$route.query.code
+    this.searchForm.name = this.$route.query.name
+    this.searchForm.address = this.$route.query.address
     this.fetchData()
   },
   methods: {
@@ -243,6 +254,21 @@ export default {
           })
       }).catch(() => {
         this.$message.info('已取消删除')
+      })
+    },
+
+    // 查看部门下的医生
+    viewDoctors(row) {
+      if (!row || !row.id) {
+        this.$message.error('无效的科室数据')
+        return
+      }
+
+      this.$router.push({
+        path: '/user/doctor',
+        query: {
+          departmentId: row.id,
+        }
       })
     }
   }
@@ -341,3 +367,4 @@ export default {
   }
 }
 </style>
+
