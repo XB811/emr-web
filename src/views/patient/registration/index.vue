@@ -268,6 +268,30 @@
               </el-tag>
             </template>
           </el-table-column>
+          <!-- 添加操作列 -->
+          <el-table-column
+            label="操作"
+            align="center"
+            width="180">
+            <template slot-scope="scope">
+              <div class="operation-buttons">
+                <el-button
+                  size="mini"
+                  type="primary"
+                  :disabled="scope.row.isFinish === 1"
+                  @click="handleEditRegistration(scope.row)">
+                  修改
+                </el-button>
+                <el-button
+                  size="mini"
+                  type="danger"
+                  :disabled="scope.row.isFinish === 1"
+                  @click="handleCancelRegistration(scope.row)">
+                  取消
+                </el-button>
+              </div>
+            </template>
+          </el-table-column>
         </el-table>
 
         <!-- 分页组件 -->
@@ -283,6 +307,88 @@
         </el-pagination>
       </el-card>
     </div>
+
+    <!-- 添加修改预约弹窗 -->
+    <el-dialog
+      title="修改预约"
+      :visible.sync="editDialogVisible"
+      width="700px"
+      :before-close="handleCloseEditDialog"
+      v-loading="editLoading">
+
+      <div v-if="currentBookingInfo && selectedRegistration">
+        <div class="doctor-booking-header">
+          <el-avatar :size="40" icon="el-icon-user-solid"></el-avatar>
+          <div class="doctor-booking-info">
+            <h3>{{ selectedRegistration.doctorName }} 医生</h3>
+            <div class="doctor-dept">
+              <span>{{ selectedRegistration.departmentName }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 预约日期选择 -->
+        <div class="booking-date-selection">
+          <h4 class="section-title">选择新日期</h4>
+          <el-date-picker
+            v-model="editDate"
+            type="date"
+            placeholder="选择日期"
+            :picker-options="datePickerOptions"
+            value-format="yyyy-MM-dd"
+            @change="handleEditDateChange">
+          </el-date-picker>
+        </div>
+
+        <!-- 时间段选择 -->
+        <div class="booking-time-selection" v-if="editDate">
+          <h4 class="section-title">选择新时间段</h4>
+          <div class="time-slot-options">
+            <el-radio-group v-model="editTimeSlot">
+              <el-radio
+                :label="0"
+                :disabled="!editAvailableTimeSlots.morning">
+                上午
+              </el-radio>
+              <el-radio
+                :label="1"
+                :disabled="!editAvailableTimeSlots.afternoon">
+                下午
+              </el-radio>
+            </el-radio-group>
+          </div>
+        </div>
+
+        <!-- 提示信息 -->
+        <div class="booking-info-notice" v-if="!isEditAvailableDate">
+          <el-alert
+            title="该日期没有可预约的时间段"
+            type="warning"
+            :closable="false"
+            show-icon>
+          </el-alert>
+        </div>
+      </div>
+
+      <div v-else-if="!editLoading" class="no-booking-info">
+        <el-alert
+          title="无法获取医生预约信息，请稍后重试"
+          type="info"
+          :closable="false"
+          show-icon>
+        </el-alert>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCloseEditDialog">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="submitEditRegistration"
+          :disabled="!canEditSubmit">
+          确认修改
+        </el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -290,7 +396,7 @@
 import { queryAllDepartments } from '@/api/department'
 import { pageQuery as userPageQuery, queryByUserId } from '@/api/user'
 import { queryByDoctorId } from '@/api/booking'
-import { createRegistration, pageQuery } from '@/api/registration'
+import { createRegistration, pageQuery, updateRegistration, dleteRegistration } from '@/api/registration'
 import store from '@/store'
 
 export default {
@@ -345,7 +451,19 @@ export default {
                  date > new Date(new Date().setDate(new Date().getDate() + 30));
         }
       },
-      patientId: store.getters.userId
+      patientId: store.getters.userId,
+
+      // 修改预约相关数据
+      editDialogVisible: false,
+      editLoading: false,
+      selectedRegistration: null,
+      currentBookingInfo: null,
+      editDate: '',
+      editTimeSlot: null,
+      editAvailableTimeSlots: {
+        morning: false,
+        afternoon: false
+      }
     }
   },
   computed: {
@@ -367,6 +485,17 @@ export default {
       const date = new Date(this.selectedDate);
       let day = date.getDay(); // 0-6, 0是周日
       return day;
+    },
+    // 修改预约相关计算属性
+    isEditAvailableDate() {
+      return this.editAvailableTimeSlots.morning || this.editAvailableTimeSlots.afternoon;
+    },
+    canEditSubmit() {
+      return this.editDate &&
+        this.editTimeSlot !== null &&
+        this.isEditAvailableDate &&
+        ((this.editTimeSlot === 0 && this.editAvailableTimeSlots.morning) ||
+          (this.editTimeSlot === 1 && this.editAvailableTimeSlots.afternoon));
     }
   },
   created() {
@@ -688,6 +817,157 @@ export default {
         });
     },
 
+    // 处理修改预约
+    handleEditRegistration(registration) {
+      this.selectedRegistration = registration;
+      this.editDialogVisible = true;
+      this.editLoading = true;
+      this.editDate = '';
+      this.editTimeSlot = null;
+
+      // 获取医生的预约信息
+      queryByDoctorId(registration.doctorId)
+        .then(response => {
+          if (response && response.data) {
+            this.currentBookingInfo = response.data;
+            // 默认显示当前预约的日期和时间段
+            this.editDate = registration.appointmentDate;
+            this.editTimeSlot = registration.appointmentTime;
+            this.handleEditDateChange(this.editDate);
+          } else {
+            this.currentBookingInfo = null;
+            this.$message.warning('无法获取医生预约信息');
+          }
+        })
+        .finally(() => {
+          this.editLoading = false;
+        });
+    },
+
+    // 处理编辑时日期变化
+    handleEditDateChange(date) {
+      if (!date || !this.currentBookingInfo) {
+        this.editAvailableTimeSlots = {
+          morning: false,
+          afternoon: false
+        };
+        this.editTimeSlot = null;
+        return;
+      }
+
+      // 根据选择的日期和医生的可预约时间，判断哪些时间段可以预约
+      const dayOfWeek = new Date(date).getDay(); // 0-6, 0是周日
+      const binaryString = this.formatAvailableTime(this.currentBookingInfo.availableTime);
+
+      // 调整索引，将周日从0调整到6的位置
+      const adjustedDayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+
+      // 计算上午和下午的时间槽位在二进制字符串中的索引
+      const morningIndex = adjustedDayIndex * 2;
+      const afternoonIndex = adjustedDayIndex * 2 + 1;
+
+      this.editAvailableTimeSlots = {
+        morning: binaryString[morningIndex] === '1' && this.currentBookingInfo.isAvailable,
+        afternoon: binaryString[afternoonIndex] === '1' && this.currentBookingInfo.isAvailable
+      };
+
+      // 如果当前选择的时间段不可用，则重置选择
+      if ((this.editTimeSlot === 0 && !this.editAvailableTimeSlots.morning) ||
+        (this.editTimeSlot === 1 && !this.editAvailableTimeSlots.afternoon)) {
+        this.editTimeSlot = null;
+      }
+
+      // 如果只有一个时间段可用，自动选择
+      if (this.editAvailableTimeSlots.morning && !this.editAvailableTimeSlots.afternoon) {
+        this.editTimeSlot = 0;
+      } else if (!this.editAvailableTimeSlots.morning && this.editAvailableTimeSlots.afternoon) {
+        this.editTimeSlot = 1;
+      }
+    },
+
+    // 关闭修改预约弹窗
+    handleCloseEditDialog() {
+      this.editDialogVisible = false;
+      this.selectedRegistration = null;
+      this.currentBookingInfo = null;
+      this.editDate = '';
+      this.editTimeSlot = null;
+    },
+
+    // 提交修改预约
+    submitEditRegistration() {
+      if (!this.canEditSubmit || !this.selectedRegistration) {
+        this.$message.error('修改信息不完整，请检查');
+        return;
+      }
+
+      // 检查是否有实际修改
+      if (this.editDate === this.selectedRegistration.appointmentDate &&
+          this.editTimeSlot === this.selectedRegistration.appointmentTime) {
+        this.$message.info('预约信息未变更');
+        this.handleCloseEditDialog();
+        return;
+      }
+
+      const updateData = {
+        id: this.selectedRegistration.id,
+        patientId: this.selectedRegistration.patientId,
+        doctorId: this.selectedRegistration.doctorId,
+        appointmentDate: this.editDate,
+        appointmentTime: this.editTimeSlot
+      };
+
+      this.editLoading = true;
+
+      updateRegistration(updateData)
+        .then(response => {
+          if (response && response.code === '0') {
+            this.$message.success('预约修改成功！');
+            this.handleCloseEditDialog();
+            // 刷新挂号记录列表
+            this.fetchMyRegistrations();
+          } else {
+            this.$message.error('修改预约失败: ' + (response.message || '未知错误'));
+          }
+        })
+        .catch(error => {
+          console.error('修改预约出错:', error);
+          this.$message.error('修改预约失败');
+        })
+        .finally(() => {
+          this.editLoading = false;
+        });
+    },
+
+    // 处理取消预约
+    handleCancelRegistration(registration) {
+      this.$confirm('确定要取消此次预约吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.myRegistrationsLoading = true;
+
+        dleteRegistration(registration.id)
+          .then(response => {
+            if (response && response.code === '0') {
+              this.$message.success('预约已取消');
+              // 刷新挂号记录列表
+              this.fetchMyRegistrations();
+            } else {
+              this.$message.error('取消预约失败: ' + (response.message || '未知错误'));
+              this.myRegistrationsLoading = false;
+            }
+          })
+          .catch(error => {
+            console.error('取消预约出错:', error);
+            this.$message.error('取消预约失败');
+            this.myRegistrationsLoading = false;
+          });
+      }).catch(() => {
+        // 用户取消操作
+      });
+    }
   }
 }
 </script>
@@ -763,5 +1043,52 @@ export default {
   text-align: center;
 }
 
-/* ...其他样式... */
+/* 操作按钮样式 */
+.operation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* 编辑预约弹窗样式 */
+.doctor-booking-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.doctor-booking-info {
+  margin-left: 15px;
+}
+
+.doctor-booking-info h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.doctor-dept {
+  color: #606266;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.section-title {
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.booking-date-selection,
+.booking-time-selection {
+  margin-bottom: 20px;
+}
+
+.time-slot-options {
+  margin-top: 10px;
+}
+
+.booking-info-notice {
+  margin-top: 20px;
+}
 </style>

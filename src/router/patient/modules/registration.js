@@ -5,7 +5,7 @@ export default {
   name: 'Registration',
   children: [{
     path: '',
-    component: () => import('@/views/patient/registration'),
+    component: () => import('@/views/patient/registration/index.vue'),
     name: 'Registration',
     meta:{
       //路由元信息

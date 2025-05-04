@@ -18,17 +18,17 @@
         <el-input v-model="doctorName" disabled></el-input>
       </el-form-item>
 
-      <!-- 创建操作时显示病历ID、患者ID和医生ID，可编辑 -->
+      <!-- 创建操作时显示病历ID、患者ID和医生ID，不可编辑 -->
       <el-form-item v-if="createOrUpdate === 'create'" label="病历ID" prop="emrId" required>
-        <el-input v-model="evaluationForm.emrId" placeholder="请输入病历ID"></el-input>
+        <el-input v-model="evaluationForm.emrId" placeholder="请输入病历ID" disabled></el-input>
       </el-form-item>
 
       <el-form-item v-if="createOrUpdate === 'create'" label="患者ID" prop="patientId" required>
-        <el-input v-model="evaluationForm.patientId" placeholder="请输入患者ID"></el-input>
+        <el-input v-model="evaluationForm.patientId" placeholder="请输入患者ID" disabled></el-input>
       </el-form-item>
 
       <el-form-item v-if="createOrUpdate === 'create'" label="医生ID" prop="doctorId" required>
-        <el-input v-model="evaluationForm.doctorId" placeholder="请输入医生ID"></el-input>
+        <el-input v-model="evaluationForm.doctorId" placeholder="请输入医生ID" disabled></el-input>
       </el-form-item>
 
       <el-form-item label="评价内容" prop="content" required>

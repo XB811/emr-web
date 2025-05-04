@@ -55,3 +55,10 @@ export function pageQuery(data,current,size) {
     }
   })
 }
+//根据id查询emr是否被评价
+export function hasEvaluation(emrId) {
+  return request({
+    url: `${servicesName}/v1/hasEvaluation/${emrId}`,
+    method: 'get'
+  })
+}

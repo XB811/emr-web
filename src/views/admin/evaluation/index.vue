@@ -99,26 +99,26 @@
                 >详情</el-button>
               </evaluation-info-button>
 
-              <!-- 编辑按钮 -->
-              <evaluation-change-button
-                :id="scope.row.id"
-                create-or-update="update"
-                @submit-success="handleUpdateSuccess"
-              >
-                <el-button
-                  size="mini"
-                  type="primary"
-                  icon="el-icon-edit"
-                >编辑</el-button>
-              </evaluation-change-button>
+<!--              &lt;!&ndash; 编辑按钮 &ndash;&gt;-->
+<!--              <evaluation-change-button-->
+<!--                :id="scope.row.id"-->
+<!--                create-or-update="update"-->
+<!--                @submit-success="handleUpdateSuccess"-->
+<!--              >-->
+<!--                <el-button-->
+<!--                  size="mini"-->
+<!--                  type="primary"-->
+<!--                  icon="el-icon-edit"-->
+<!--                >编辑</el-button>-->
+<!--              </evaluation-change-button>-->
 
-              <!-- 删除按钮 -->
-              <el-button
-                size="mini"
-                type="danger"
-                icon="el-icon-delete"
-                @click="handleDelete(scope.row)"
-              >删除</el-button>
+<!--              &lt;!&ndash; 删除按钮 &ndash;&gt;-->
+<!--              <el-button-->
+<!--                size="mini"-->
+<!--                type="danger"-->
+<!--                icon="el-icon-delete"-->
+<!--                @click="handleDelete(scope.row)"-->
+<!--              >删除</el-button>-->
             </div>
           </template>
         </el-table-column>
