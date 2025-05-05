@@ -112,3 +112,19 @@ export function pageQuery(data,current,size,userType) {
     method: 'get'
   })
 }
+
+export function getVerifyCode(phone,userType) {
+  return request({
+    url: `${servicesName}/v1/getVerifyCode/${userType}`,
+    method: 'get',
+    params: { phone }
+  })
+}
+
+export function resetPassword(data,userType) {
+  return request({
+    url: `${servicesName}/v1/resetPassword/${userType}`,
+    method: 'put',
+    data
+  })
+}

@@ -33,14 +33,16 @@
         <el-table-column
           label="评分"
           align="center"
-          width="120"
+          width="180"
         >
           <template slot-scope="scope">
             <el-rate
               v-model="scope.row.rating"
+              :max="5"
               disabled
               show-score
               text-color="#ff9900"
+              score-template="{value}分"
             />
           </template>
         </el-table-column>
@@ -181,6 +183,10 @@ export default {
             // 预填充初始数据
             records.forEach(item => {
               item.doctorName = '加载中...'
+              // 确保评分参数存在，如果不存在设置一个默认值
+              if (item.rating === undefined || item.rating === null) {
+                item.rating = 0
+              }
             })
 
             // 先展示预填充数据
@@ -197,9 +203,7 @@ export default {
                       item.doctorName = '数据获取失败'
                     }
                   })
-                  .catch(() => {
-                    item.doctorName = '数据获取失败'
-                  })
+
                 promises.push(doctorPromise)
               } else {
                 item.doctorName = '无医生信息'
@@ -211,9 +215,7 @@ export default {
               .then(() => {
                 this.tableData = [...records] // 使用新引用触发视图更新
               })
-              .catch(error => {
-                console.error('获取医生信息出错:', error)
-              })
+
               .finally(() => {
                 this.tableLoading = false
               })
@@ -222,11 +224,7 @@ export default {
             this.tableLoading = false
           }
         })
-        .catch(error => {
-          console.error('获取评价数据出错:', error)
-          this.$message.error('获取数据失败')
-          this.tableLoading = false
-        })
+
     },
 
     // 格式化日期时间
@@ -278,15 +276,10 @@ export default {
             this.$message.success('删除成功')
             this.fetchData() // 刷新数据
           })
-          .catch(error => {
-            console.error('删除失败:', error)
-            this.$message.error('删除失败')
-          })
+
           .finally(() => {
             this.tableLoading = false
           })
-      }).catch(() => {
-        this.$message.info('已取消删除')
       })
     }
   }

@@ -51,6 +51,20 @@
               </span>
             </div>
           </div>
+
+          <!-- 添加评分显示 -->
+          <div class="rating-row">
+            <span class="field-label">评分：</span>
+            <div class="rating-content">
+              <el-rate
+                v-model="evaluationInfo.rating"
+                disabled
+                show-score
+                text-color="#ff9900"
+                score-template="{value}分">
+              </el-rate>
+            </div>
+          </div>
         </div>
 
         <el-divider></el-divider>
@@ -278,6 +292,18 @@ export default {
   padding: 2px 8px;
   border-radius: 4px;
   white-space: nowrap;
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+
+.rating-content {
+  display: flex;
+  align-items: center;
 }
 
 .section-header {

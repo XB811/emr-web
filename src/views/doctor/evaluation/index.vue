@@ -51,6 +51,23 @@
           min-width="180"
           show-overflow-tooltip
         />
+
+        <el-table-column
+          label="评分"
+          align="center"
+          width="180"
+        >
+          <template slot-scope="scope">
+            <el-rate
+              v-model="scope.row.rating"
+              :max="5"
+              disabled
+              show-score
+              text-color="#ff9900"
+              score-template="{value}分"
+            />
+          </template>
+         </el-table-column>
         <el-table-column
           prop="createTime"
           label="创建时间"
@@ -90,25 +107,25 @@
               </evaluation-info-button>
 
               <!-- 编辑按钮 -->
-              <evaluation-change-button
-                :id="scope.row.id"
-                create-or-update="update"
-                @submit-success="handleUpdateSuccess"
-              >
-                <el-button
-                  size="mini"
-                  type="primary"
-                  icon="el-icon-edit"
-                >编辑</el-button>
-              </evaluation-change-button>
+<!--              <evaluation-change-button-->
+<!--                :id="scope.row.id"-->
+<!--                create-or-update="update"-->
+<!--                @submit-success="handleUpdateSuccess"-->
+<!--              >-->
+<!--                <el-button-->
+<!--                  size="mini"-->
+<!--                  type="primary"-->
+<!--                  icon="el-icon-edit"-->
+<!--                >编辑</el-button> -->
+<!--              </evaluation-change-button>-->
 
               <!-- 删除按钮 -->
-              <el-button
-                size="mini"
-                type="danger"
-                icon="el-icon-delete"
-                @click="handleDelete(scope.row)"
-              >删除</el-button>
+<!--              <el-button-->
+<!--                size="mini"-->
+<!--                type="danger"-->
+<!--                icon="el-icon-delete"-->
+<!--                @click="handleDelete(scope.row)"-->
+<!--              >删除</el-button>-->
             </div>
           </template>
         </el-table-column>
@@ -245,7 +262,7 @@ export default {
         })
         .catch(error => {
           console.error('获取评价数据出错:', error)
-          this.$message.error('获取数据失败')
+          //this.$message.error('获取数据失败')
           this.tableLoading = false
         })
     },
@@ -316,13 +333,13 @@ export default {
           })
           .catch(error => {
             console.error('删除失败:', error)
-            this.$message.error('删除失败')
+            //this.$message.error('删除失败')
           })
           .finally(() => {
             this.tableLoading = false
           })
       }).catch(() => {
-        this.$message.info('已取消删除')
+        //this.$message.info('已取消删除')
       })
     }
   }

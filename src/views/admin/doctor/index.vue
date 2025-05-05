@@ -185,7 +185,7 @@
 </template>
 
 <script>
-import { pageQuery, deletion } from '@/api/user'
+import {pageQuery, deletion, queryAll} from '@/api/user'
 import { queryAllDepartments } from '@/api/department'
 import DoctorChangeButton from '@/components/user/button/doctorChangeButton'
 import DoctorInfoButton from '@/components/user/button/doctorInfoButton'
@@ -272,15 +272,10 @@ export default {
         phone: this.searchForm.phone || undefined,
         departmentId: this.searchForm.departmentId || undefined
       }
-      pageQuery(
-        params,
-        this.pagination.current,
-        this.pagination.size,
-        'doctor'
-      )
+        queryAll("doctor")
         .then(response => {
           if (response && response.data) {
-            this.tableData = response.data.records
+            this.tableData = response.data
             this.pagination.total = response.data.total
             this.pagination.current = response.data.current
             this.pagination.size = response.data.size

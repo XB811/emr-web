@@ -10,7 +10,7 @@
           <div v-if="notices.length === 0" class="no-notice">
             暂无公告
           </div>
-          <div v-else v-for="notice in notices" :key="notice.id" class="notice-item">
+          <div v-for="notice in notices" :key="notice.id" class="notice-item">
             <div class="notice-header">
               <h4>{{ notice.title }}</h4>
               <div class="notice-info">
@@ -99,7 +99,12 @@
           <!-- 确认按钮 -->
           <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
           <div class="register-link">
-          <router-link to="/register">立即注册</router-link>
+            <span>
+              <router-link to="/resetPassword" style="margin-right: 40%">忘记密码？</router-link>
+            </span>
+            <Span>
+              <router-link to="/register" style="margin-left:auto">立即注册</router-link>
+            </Span>
           </div>
         </el-form>
 
@@ -455,7 +460,7 @@ $light_gray:#eee;
     margin-bottom: 10px;
     color: $dark_gray;
     font-size: 14px;
-    margin-left: 80%;
+    //margin-left: 80%;
     a {
       color: #409EFF;
       text-decoration: none;

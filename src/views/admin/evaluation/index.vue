@@ -62,6 +62,22 @@
           show-overflow-tooltip
         />
         <el-table-column
+          label="评分"
+          align="center"
+          width="180"
+        >
+          <template slot-scope="scope">
+            <el-rate
+              v-model="scope.row.rating"
+              :max="5"
+              disabled
+              show-score
+              text-color="#ff9900"
+              score-template="{value}分"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="createTime"
           label="创建时间"
           align="center"
@@ -289,11 +305,6 @@ export default {
             this.$message.error('获取数据失败')
             this.tableLoading = false
           }
-        })
-        .catch(error => {
-          console.error('获取评价数据出错:', error)
-          this.$message.error('获取数据失败')
-          this.tableLoading = false
         })
     },
 
