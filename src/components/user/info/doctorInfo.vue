@@ -25,6 +25,16 @@
                 <el-tag size="small" type="success" v-if="userInfo.title">{{ userInfo.title }}</el-tag>
                 <el-tag size="small" type="warning" v-if="userInfo.department">{{ userInfo.department }}</el-tag>
               </div>
+              <!-- 添加评分展示 -->
+              <div class="doctor-rating" v-if="doctorRating !== null">
+                <el-rate
+                  v-model="doctorRating"
+                  disabled
+                  show-score
+                  text-color="#ff9900"
+                  score-template="{value} 分">
+                </el-rate>
+              </div>
             </div>
           </div>
         </div>
@@ -97,6 +107,7 @@
 <script>
 import { queryByUserId, queryActualByUserId } from "@/api/user"
 import { queryDepartmentById } from "@/api/department" // 导入获取科室信息的API
+import { getAverageRating } from "@/api/evaluation" // 导入获取评分的API
 
 export default {
   name: 'DoctorInfo',
@@ -119,7 +130,8 @@ export default {
        userInfo: null,
        loading: false,
        departmentName: null, // 添加科室名称字段
-       specialtyList: [] // 添加专业领域列表
+       specialtyList: [], // 添加专业领域列表
+       doctorRating: null // 医生评分
      }
   },
   watch:{
@@ -157,6 +169,11 @@ export default {
           } else {
             this.departmentName = null;
           }
+
+          // 获取医生评分
+          if (this.userType === 'doctor') {
+            this.fetchDoctorRating();
+          }
         })
         .catch(error => {
           console.error('获取医生信息失败:', error)
@@ -164,6 +181,22 @@ export default {
         .finally(() => {
           this.loading = false
         })
+    },
+
+    // 获取医生评分
+    fetchDoctorRating() {
+      getAverageRating(this.id)
+        .then(response => {
+          if (response && response.data !== undefined) {
+            this.doctorRating = response.data;
+          } else {
+            this.doctorRating = 0;
+          }
+        })
+        .catch(error => {
+          console.error('获取医生评分失败:', error);
+          this.doctorRating = 0;
+        });
     },
 
     // 处理专业领域数据
@@ -279,6 +312,12 @@ export default {
 .doctor-tags {
   display: flex;
   gap: 8px;
+}
+
+.doctor-rating {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
 }
 
 .user-descriptions {

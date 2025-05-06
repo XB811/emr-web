@@ -61,7 +61,6 @@
           style="width: 100%"
           border
           stripe>
-          <!-- ...原有表格内容... -->
           <el-table-column
             prop="realName"
             label="医生姓名"
@@ -100,6 +99,22 @@
             </template>
           </el-table-column>
 
+          <!-- 添加评分列 -->
+          <el-table-column
+            label="医生评分"
+            align="center"
+            min-width="120">
+            <template slot-scope="scope">
+              <el-rate
+                v-model="scope.row.rating"
+                disabled
+                show-score
+                text-color="#ff9900"
+                score-template="{value}">
+              </el-rate>
+            </template>
+          </el-table-column>
+
           <el-table-column
             label="操作"
             align="center"
@@ -135,7 +150,6 @@
         width="700px"
         :before-close="handleCloseBookingDialog"
         v-loading="bookingLoading">
-        <!-- ...原有弹窗内容... -->
         <div v-if="bookingInfo">
           <div class="doctor-booking-header">
             <el-avatar :size="40" icon="el-icon-user-solid"></el-avatar>
@@ -397,6 +411,7 @@ import { queryAllDepartments } from '@/api/department'
 import { pageQuery as userPageQuery, queryByUserId } from '@/api/user'
 import { queryByDoctorId } from '@/api/booking'
 import { createRegistration, pageQuery, updateRegistration, dleteRegistration } from '@/api/registration'
+import { getAverageRating } from '@/api/evaluation' // 导入获取评分的API
 import store from '@/store'
 
 export default {
@@ -672,22 +687,52 @@ export default {
       )
         .then(response => {
           if (response && response.data) {
-            this.doctorList = (response.data.records || []).map(doctor => {
+            const doctors = (response.data.records || []).map(doctor => {
               // 处理专长字段，将JSON字符串转换为数组
               return {
                 ...doctor,
-                specialtyArray: this.parseSpecialty(doctor.specialty)
+                specialtyArray: this.parseSpecialty(doctor.specialty),
+                rating: 0 // 初始化评分为0
               };
             });
-            this.pagination.total = response.data.total || 0;
-            this.pagination.current = (response.data.current || 0) + 1;
-            this.isDoctorListLoaded = true;
+
+            // 为每个医生获取评分
+            const ratingPromises = doctors.map(doctor => {
+              return getAverageRating(doctor.id)
+                .then(response => {
+                  if (response && response.data !== undefined) {
+                    // 处理-1的情况（无评分）
+                    doctor.rating = response.data === -1 ? 0 : response.data;
+                  }
+                  return doctor;
+                })
+                .catch(error => {
+                  console.error(`获取医生${doctor.id}的评分失败:`, error);
+                  return doctor;
+                });
+            });
+
+            // 等待所有评分获取完成
+            Promise.all(ratingPromises)
+              .then(doctorsWithRatings => {
+                this.doctorList = doctorsWithRatings;
+                this.pagination.total = response.data.total || 0;
+                this.pagination.current = (response.data.current || 0) + 1;
+                this.isDoctorListLoaded = true;
+              })
+              .finally(() => {
+                this.loading = false;
+              });
           } else {
             this.doctorList = [];
             this.$message.error('获取医生列表失败');
+            this.loading = false;
           }
         })
-        .finally(() => {
+        .catch(error => {
+          console.error('获取医生列表失败:', error);
+          this.doctorList = [];
+          this.$message.error('获取医生列表失败');
           this.loading = false;
         });
     },
@@ -1092,3 +1137,4 @@ export default {
   margin-top: 20px;
 }
 </style>
+

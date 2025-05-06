@@ -93,6 +93,17 @@
             {{ getDepartmentName(scope.row.departmentId) }}
           </template>
         </el-table-column>
+        <el-table-column label="评分" align="center" width="180">
+          <template slot-scope="scope">
+            <el-rate
+              :value="doctorRatings[scope.row.id] || 0"
+              disabled
+              show-score
+              text-color="#ff9900"
+              score-template="{value}分"
+            />
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           align="center"
@@ -190,6 +201,7 @@ import { queryAllDepartments } from '@/api/department'
 import DoctorChangeButton from '@/components/user/button/doctorChangeButton'
 import DoctorInfoButton from '@/components/user/button/doctorInfoButton'
 import BookingInfoButton from "@/components/services/button/info/bookingInfoButton.vue";
+import {getAverageRating} from "@/api/evaluation";
 
 export default {
   name: 'DoctorManagement',
@@ -220,7 +232,8 @@ export default {
       // 科室选项
       departmentOptions: [],
       // 科室id到名称的映射
-      departmentMap: {}
+      departmentMap: {},
+      doctorRatings: {} // 存储医生评分
     }
   },
   created() {
@@ -272,10 +285,18 @@ export default {
         phone: this.searchForm.phone || undefined,
         departmentId: this.searchForm.departmentId || undefined
       }
-        queryAll("doctor")
+        pageQuery(this.searchForm,
+          this.pagination.current,
+          this.pagination.size,
+          "doctor"
+        )
         .then(response => {
           if (response && response.data) {
-            this.tableData = response.data
+            this.tableData = response.data.records
+            // 获取医生评分
+            this.tableData.forEach(doctor => {
+              this.loadDoctorRating(doctor.id)
+            })
             this.pagination.total = response.data.total
             this.pagination.current = response.data.current
             this.pagination.size = response.data.size
@@ -287,6 +308,17 @@ export default {
         })
         .finally(() => {
           this.tableLoading = false
+        })
+    },
+    // 加载医生评分并保存到响应式数据中
+    loadDoctorRating(doctorId) {
+      getAverageRating(doctorId)
+        .then(response => {
+          if (response && response.code === "0") {
+            // 使用Vue的$set确保响应式更新
+            if(response.data==-1)response.data=0
+            this.$set(this.doctorRatings, doctorId, response.data)
+          }
         })
     },
 

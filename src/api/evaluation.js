@@ -62,3 +62,10 @@ export function hasEvaluation(emrId) {
     method: 'get'
   })
 }
+
+export function getAverageRating(doctorId){
+  return request({
+    url: `${servicesName}/v1/getAverageRating/${doctorId}`,
+    method: 'get'
+  })
+}
